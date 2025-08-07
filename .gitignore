@@ -1,0 +1,16 @@
+__pycache__/
+*.log
+*.pyc
+*.fits
+*.fit
+*.zip
+*.tar.gz
+*.tar
+*.safetensors
+*.csv
+survey/
+Data/
+figures/
+models/
+results/
+likelihood/
