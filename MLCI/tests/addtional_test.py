@@ -1,3 +1,4 @@
+#import preprocess, boosting, comparision, model, plot, features_importance, agn_feedback
 from MLCI.data_processing import preprocess, boosting, agn_feedback
 from MLCI.visualization import comparision, plot, features_importance, comparision_h0weight
 from MLCI.models import model
@@ -7,7 +8,6 @@ from astropy.table import Table, vstack
 from scipy.stats import gaussian_kde
 import yaml, os, time
 from datetime import datetime
-
 
 def exclude_out(xlabel, ylabel, data, percent=5):
     x = data[xlabel].data
@@ -34,11 +34,11 @@ def test_configuration(model_name, config):
     print(f"model_name: {config['model_name']} \n", cols)
     vars_name = list(cols.keys())
     if not os.path.exists(f"models/{config['model_name']}"):
-        os.mkdir(f"./models/{config['model_name']}")
+        os.mkdir(f"models/{config['model_name']}")
     if not os.path.exists(f"figures/{config['model_name']}"):
-        os.mkdir(f"./figures/{config['model_name']}")
+        os.mkdir(f"figures/{config['model_name']}")
     if not os.path.exists(f"results/{config['model_name']}"):
-        os.mkdir(f"./results/{config['model_name']}")
+        os.mkdir(f"results/{config['model_name']}")
     
     # using different feedback
     if isinstance(config['agn_feedback'], float):
@@ -58,6 +58,7 @@ def test_configuration(model_name, config):
         simulated_data_plus, simulated_data_minus, delta_plus, delta_minus = agn_feedback.agn_corrected_data()
         simulated_data = simulated_data_minus
     
+
     exclude_set = ['HR', 'C8a1', 'C8a2']
     mask = ~np.isin(simulated_data['label'], exclude_set)
     simulated_data = simulated_data[mask]
@@ -68,6 +69,14 @@ def test_configuration(model_name, config):
     if config['exclude_outlier']:
         xlabel, ylabel = 'T', 'R_corr'
         observed_data = exclude_out(xlabel, ylabel, observed_data, percent=5)
+        '''
+        new_simulated_data = []
+        for key in [f'C{i+3}' for i in range(13)]:
+            temp_subset = simulated_data[simulated_data['label'] == key]
+            temp_subset = exclude_out(xlabel, ylabel, temp_subset, percent=5)
+            new_simulated_data.append(temp_subset)
+        simulated_data = vstack(new_simulated_data)
+        '''
     # boosting data
     observed_boost_info, observed_boost_sample = boosting.boosting(observed_data, vars_name, num=config['sample_num'], sampler='multinorm')
     simulated_boost_info, simulated_boost_sample = boosting.boosting(simulated_data, vars_name, num=config['sample_num'], sampler='multinorm', max_num=config['max_num'])
@@ -85,7 +94,7 @@ def test_configuration(model_name, config):
     output_line = f"Dataset_num: {labels} {len(eFEDS)}-{len(eRASS1)}-{len(simulated_boost_sample)}"
     print(output_line)
     output_txt = output_txt + output_line +'\n'
-    plot.plot_distribution(data, labels, cols, fname=f"./figures/{config['model_name']}/features_dis.pdf")
+    plot.plot_distribution(data, labels, cols, fname=f"figures/{config['model_name']}/features_dis.pdf")
     # model traing 
     if config['mode'] == 'RF':
         model.simulation_labels = config['simulations']
@@ -116,24 +125,24 @@ def test_configuration(model_name, config):
     classifier.test_data = valid_data
     results = classifier.points(output_name=f"./results/{config['model_name']}/mix_simulations.csv", show_acc=True)
     ture_label = classifier.test_data['label'].values
-    plot.plot_corner(results, ref_point='C8', test_set='Mix', fname=f"./figures/{config['model_name']}/mix_simulations.pdf", show_cos_name=False)
-    plot.plot_confusion_matrix(ture_label, results, title=classifier.config['model_name'], fname=f"./figures/{config['model_name']}/CM.pdf")
-    plot.plot_detection_prob(observed_data, fname=f"./figures/{config['model_name']}/detection_prob.pdf")
+    plot.plot_corner(results, ref_point='C8', test_set='Mix', fname=f"figures/{config['model_name']}/mix_simulations.pdf", show_cos_name=False)
+    plot.plot_confusion_matrix(ture_label, results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
+    plot.plot_detection_prob(observed_data, fname=f"figures/{config['model_name']}/detection_prob.pdf")
     
     # prediction and show contours
     classifier.test_data = observed_boost_sample
     classifier.config['weight'] = True
     classifier.config['p_threshold'] = 0.0
     results = classifier.points(output_name=f"./results/{config['model_name']}/observation.csv")
-    plot.plot_corner(results, ref_point='C8', test_set='observed_samples', fname=f"./figures/{config['model_name']}/observation.pdf", show_cos_name=False)
-    plot.plot_corner(results, ref_point='Planck2018', smooth=1.0, test_set='observed_samples', fname=f'./figures/{config['model_name']}/observation_Planck2018.pdf', show_cos_name=False, show_pdf=False,show_datapoint=False)
+    plot.plot_corner(results, ref_point='C8', test_set='observed_samples', fname=f"figures/{config['model_name']}/observation.pdf", show_cos_name=False)
+    plot.plot_corner(results, ref_point='Planck2018', smooth=1.0, test_set='observed_samples', fname=f'figures/{config['model_name']}/observation_Planck2018.pdf', show_cos_name=False, show_pdf=False,show_datapoint=False)
     
     redshift_bin = np.array([0.0, 0.2, 0.4, 0.6, 1.0])
     results = pd.read_csv(f"./results/{config['model_name']}/observation.csv")
     for i in range(len(redshift_bin)-1):
         subset = results[(results['z'] >= redshift_bin[i]) & (results['z'] < redshift_bin[i+1])]
         print(f"redshift: {redshift_bin[i]} - {redshift_bin[i+1]}, num={len(subset)}")
-        fname = f"./figures/{config['model_name']}/observation_z={redshift_bin[i]:.1f}_{redshift_bin[i+1]:.1f}.pdf"
+        fname = f"figures/{config['model_name']}/observation_z={redshift_bin[i]:.1f}_{redshift_bin[i+1]:.1f}.pdf"
         plot.plot_corner(subset, ref_point='Planck2018', test_set='observed_samples', fname=fname, show_cos_name=False)
 
     #compare with other survey
@@ -204,5 +213,5 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == 'RFtest1':
+        if model_name == 'RFtest16':
             test_configuration(model_name, config)

@@ -1,6 +1,6 @@
 import pandas as pd
 import corner
-import model as model_new
+from ..models import model as model_new
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
