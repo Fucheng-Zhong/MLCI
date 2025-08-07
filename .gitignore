@@ -8,6 +8,7 @@ __pycache__/
 *.tar
 *.safetensors
 *.csv
+._*
 survey/
 Data/
 figures/
