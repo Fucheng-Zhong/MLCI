@@ -285,3 +285,31 @@ RFtest16:
   - C13
   - C14
   - C15
+RFtest17:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 1000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: leaf size 1000
+  simulations: *id002
+RFtest18:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level:
+  - 0.01
+  - 0.01
+  leaf_size: 1000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: noise 0.01+leaf 1000
+  simulations: *id002

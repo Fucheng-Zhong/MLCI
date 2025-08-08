@@ -78,6 +78,15 @@ test_set['RFtest16'] = benchmark.copy()
 test_set['RFtest16']['simulations'] = [f'C{i+1}' for i in range(15)]
 test_set['RFtest16']['description'] = 'all simulations'
 
+test_set['RFtest17'] = benchmark.copy()
+test_set['RFtest17']['leaf_size'] = 1e3
+test_set['RFtest17']['description'] = 'leaf size 1000'
+
+test_set['RFtest18'] = benchmark.copy()
+test_set['RFtest18']['leaf_size'] = 1e3
+test_set['RFtest18']['noise_level'] = [0.01, 0.01]
+test_set['RFtest18']['description'] = 'noise 0.01+leaf 1000'
+
 
 class YamlCreator:
     def __init__(self, fname='default_test_para.yaml'):

@@ -213,5 +213,5 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == 'RFtest16':
+        if model_name == 'RFtest17' or model_name == 'RFtest18':
             test_configuration(model_name, config)
