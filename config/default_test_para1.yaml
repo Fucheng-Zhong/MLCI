@@ -11,7 +11,6 @@ RFtest1:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: Fiducial
   simulations: &id002
   - C3
   - C4
@@ -37,7 +36,6 @@ RFtest2:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: +C2
   simulations:
   - C2
   - C3
@@ -64,7 +62,6 @@ RFtest3:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: +C2-C4
   simulations:
   - C2
   - C3
@@ -90,7 +87,6 @@ RFtest4:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: -C3-C10-C12-C15
   simulations:
   - C4
   - C5
@@ -112,7 +108,6 @@ RFtest5:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: -C3-C4-C5-C6
   simulations:
   - C7
   - C8
@@ -134,7 +129,6 @@ RFtest6:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +delta
   simulations: *id002
 RFtest7:
   mode: RF
@@ -147,7 +141,6 @@ RFtest7:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -delta
   simulations: *id002
 RFtest8:
   mode: RF
@@ -160,7 +153,6 @@ RFtest8:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.1
   simulations: *id002
 RFtest9:
   mode: RF
@@ -173,7 +165,6 @@ RFtest9:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.1
   simulations: *id002
 RFtest10:
   mode: RF
@@ -186,7 +177,6 @@ RFtest10:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.2
   simulations: *id002
 RFtest11:
   mode: RF
@@ -199,7 +189,6 @@ RFtest11:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.2
   simulations: *id002
 RFtest12:
   mode: RF
@@ -212,7 +201,6 @@ RFtest12:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.3
   simulations: *id002
 RFtest13:
   mode: RF
@@ -225,7 +213,6 @@ RFtest13:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.3
   simulations: *id002
 RFtest14:
   mode: RF
@@ -240,7 +227,6 @@ RFtest14:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: noise level 0.1
   simulations: *id002
 RFtest15:
   mode: RF
@@ -255,7 +241,6 @@ RFtest15:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: noise level 0.01
   simulations: *id002
 RFtest16:
   mode: RF
@@ -268,7 +253,6 @@ RFtest16:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: all simulations
   simulations:
   - C1
   - C2
