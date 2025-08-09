@@ -9,7 +9,6 @@ __pycache__/
 *.safetensors
 *.csv
 ._*
-survey/
 Data/
 figures/
 models/

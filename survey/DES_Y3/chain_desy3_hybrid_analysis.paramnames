@@ -1,0 +1,27 @@
+wl_photoz_errors--bias_1     bias_1
+wl_photoz_errors--bias_2     bias_2
+wl_photoz_errors--bias_3     bias_3
+wl_photoz_errors--bias_4     bias_4
+shear_calibration_parameters--m1     m_1
+shear_calibration_parameters--m2     m_2
+shear_calibration_parameters--m3     m_3
+shear_calibration_parameters--m4     m_4
+intrinsic_alignment_parameters--a1     IA_a1
+intrinsic_alignment_parameters--alpha1     IA_alpha1
+halo_model_parameters--logt_agn     logT_AGN
+cosmological_parameters--omch2     \Omega_\mathrm{c}h^2
+cosmological_parameters--ombh2     \Omega_\mathrm{b}h^2
+cosmological_parameters--h0        h
+cosmological_parameters--n_s       n_s
+cosmological_parameters--s_8_input s_{8,\mathrm{input}}
+cosmological_parameters--mnu       \sum m_\nu
+COSMOLOGICAL_PARAMETERS--S_8       S_8
+COSMOLOGICAL_PARAMETERS--SIGMA_8   \sigma_8
+COSMOLOGICAL_PARAMETERS--A_S       A_s
+COSMOLOGICAL_PARAMETERS--OMEGA_M   \Omega_m
+COSMOLOGICAL_PARAMETERS--OMEGA_LAMBDA \Omega_\Lambda
+COSMOLOGICAL_PARAMETERS--COSMOMC_THETA \theta_\mathrm{MC}
+DELTA_Z_OUT_DES--BIN_1             \Delta z_1
+DELTA_Z_OUT_DES--BIN_2             \Delta z_2
+DELTA_Z_OUT_DES--BIN_3             \Delta z_3
+DELTA_Z_OUT_DES--BIN_4             \Delta z_4
