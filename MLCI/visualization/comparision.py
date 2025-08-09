@@ -1,7 +1,7 @@
 import seaborn as sns
 import numpy as np
 import pandas as pd
-import corner, sys
+import os
 import matplotlib.pyplot as plt
 from astropy.table import Table 
 import getdist.plots as gplot
@@ -34,9 +34,13 @@ def read_samples(fanme, col_names, names, labels, is_catalog=False):
 # Chains dir download from link: 
 #1 https://wiki.cosmos.esa.int/planck-legacy-archive/index.php/Cosmological_Parameters#File_formats
 #2 https://www.cosmos.esa.int/web/planck/pla
+
+
+# 当前目录 # Need to add the absolute location
+cwd = os.getcwd()
+chain_dir = os.path.join(cwd, 'survey/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3/')
+
 def read_plank_data(names, labels):
-    # Need to add the absolute location
-    chain_dir=r'D:/桌面/eROSTA/survey/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3/'
     g = gplot.getSinglePlotter(chain_dir=chain_dir)
     samples = g.sample_analyser.samples_for_root('base_plikHM_TTTEEE_lowl_lowE')
     p = samples.getParams()
