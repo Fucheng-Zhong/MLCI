@@ -114,11 +114,6 @@ def test_configuration(model_name, config):
     classifier.config['model_name'] = model_name
     if config['mode'] == 'RF':
         classifier.training()
-        #=== updata parameters and labels in plot
-        plot.sim_catalog = model.sim_catalog
-        plot.output_para_name = model.output_para_name
-        plot.simulation_labels = model.simulation_labels
-        plot.prob_lable = model.prob_lable
     elif config['mode'] == 'NB':
         classifier.calculate_likelihood()
     # validations
@@ -126,7 +121,7 @@ def test_configuration(model_name, config):
     results = classifier.points(output_name=f"./results/{config['model_name']}/mix_simulations.csv", show_acc=True)
     ture_label = classifier.test_data['label'].values
     plot.plot_corner(results, ref_point='C8', test_set='Mix', fname=f"figures/{config['model_name']}/mix_simulations.pdf", show_cos_name=False)
-    plot.plot_confusion_matrix(ture_label, results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
+    plot.plot_confusion_matrix(results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
     plot.plot_detection_prob(observed_data, fname=f"figures/{config['model_name']}/detection_prob.pdf")
     
     # prediction and show contours
@@ -213,5 +208,4 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == 'RFtest17' or model_name == 'RFtest18':
-            test_configuration(model_name, config)
+        test_configuration(model_name, config)

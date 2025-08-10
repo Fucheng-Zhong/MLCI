@@ -13,8 +13,6 @@ import pandas as pd
 
 sim_catalog = model_new.sim_catalog
 output_para_name = model_new.output_para_name
-simulation_labels = model_new.simulation_labels
-prob_lable = model_new.prob_lable
 col_rangs = {'R500_kpc':[1e-2, 2e3], 'Mgas500':[1e-2, 1e3], 'Lbol500':[1e-2, 2e3], 'T500':[1e-2, 3e1], 'z':[0, 1.2]}
 labels = ['eFEDS', 'DR1', 'Simu']
 units = ['kpc', '$10^{12} M_{sun}$', '$10^{42} erg s^{-1}$', 'keV', '']
@@ -46,13 +44,27 @@ def plot_distribution(dataset, labels=labels, col_rangs=col_rangs, fname=''):
     plt.close()
 
 
-def plot_confusion_matrix(ture_label, results, title='test', fname='', row=False, show_plot=True):
-    flat_prob = results[prob_lable]
-    pred_index = np.argmax(flat_prob, axis=-1) # find the largets prob index
-    pred_label = np.array(simulation_labels)[pred_index] # get the corresbonding label
-    confusion_matrix = pd.crosstab(ture_label, pred_label, normalize='index', rownames=['Actual'], colnames=['Predict'])
-    #confusion_matrix = pd.crosstab(ture_label, pred_label, rownames=['Actual'], colnames=['Predict'])
-    confusion_matrix = confusion_matrix.reindex(index=simulation_labels, columns=simulation_labels)
+def plot_confusion_matrix(results, title='test', fname='', rerange='', normalize=True):
+    prob_cols = [col for col in results.columns if col.startswith('prob_')]
+    simulation_names = [col.replace('prob_', '') for col in prob_cols]
+
+    probs = results[prob_cols]
+    pred_index = np.argmax(probs, axis=-1) # find the largets prob index
+    pred_label = np.array(simulation_names)[pred_index] # get the corresbonding label
+    ture_label = results['label'].values # ture label
+    if normalize:
+        #confusion_matrix = pd.crosstab(ture_label, pred_label, normalize='index', rownames=['Actual'], colnames=['Predict'])
+        confusion_matrix = pd.crosstab(pred_label, ture_label, normalize='index', rownames=['Predict'], colnames=['Actual'])
+    else:
+        confusion_matrix = pd.crosstab(pred_label, ture_label, rownames=['Predict'], colnames=['Actual'])
+    if rerange != '':
+        temp_sim = sim_catalog[sim_catalog['name'].isin(simulation_names)]
+        temp_sim = temp_sim.sort_values(by=rerange, ascending=True)
+        print(rerange, temp_sim[rerange])
+        new_label = temp_sim['name'].values
+        confusion_matrix = confusion_matrix.reindex(index=new_label, columns=new_label)
+    else:
+        confusion_matrix = confusion_matrix.reindex(index=simulation_names, columns=simulation_names)
     plt.figure(figsize=(8,8),dpi=160)
     sns.heatmap(confusion_matrix, annot=True, fmt='.2f', cmap='Blues', cbar=False)
     accuracy = accuracy_score(ture_label, pred_label)
@@ -65,6 +77,8 @@ def plot_confusion_matrix(ture_label, results, title='test', fname='', row=False
 
 def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf', model_name='RF', show_cos_name=True, show_pdf=True, show_datapoint=True, smooth=0.5, truncation=False):
     
+    prob_cols = [col for col in results.columns if col.startswith('prob_')]
+    simulation_names = [col.replace('prob_', '') for col in prob_cols]
     #=== truncation
     if truncation:
         omegam_max = 0.35
@@ -74,7 +88,7 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
         #masks = (results['z'] < 0.10)
         #results['weight'][masks] = 0
     
-    samples, weights, prob = results[output_para_name], results['weight'], results[prob_lable]
+    samples, weights, prob = results[output_para_name], results['weight'], results[prob_cols]
     output_labels = output_para_name
     fontsize = {"fontsize": 12}
     contour_args = {'colors': 'blue', 'linestyles': 'dashed', 'linewidths': 2}
@@ -153,9 +167,9 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
         gs = GridSpec(10, 1, figure=figure)  # 1 row GridSpec object
         ax_bottom = figure.add_subplot(gs[-1, :])  # create a sub-figure
         mean_prob = []
-        for label in simulation_labels:
+        for label in simulation_names:
             mean_prob.append(np.sum(prob[f'prob_{label}']/len(prob[f'prob_{label}'])))
-        mean_prob = pd.DataFrame(data=[mean_prob], index=['mean_P'], columns=simulation_labels)
+        mean_prob = pd.DataFrame(data=[mean_prob], index=['mean_P'], columns=simulation_names)
         sns.heatmap(mean_prob, annot=True, fmt='.2f', cmap='Blues', cbar=False, ax=ax_bottom)
         plt.title('mean PDF')
 
@@ -164,7 +178,7 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
 
 
 def get_expectation_1sigam(results, model_name, catalog_name):
-    samples, weights, prob = results[output_para_name], results['weight'], results[prob_lable]
+    samples, weights = results[output_para_name], results['weight']
     quantiles = [0.16, 0.5, 0.84]
     final_res = {'Model Name':model_name, 'Catalog':catalog_name}
     for i in range(len(output_para_name)):
