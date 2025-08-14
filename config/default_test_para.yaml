@@ -12,6 +12,7 @@ RFtest1:
   max_depth: 10
   exclude_outlier: false
   description: Fiducial
+  delta_prop: 1
   simulations: &id002
   - C3
   - C4
@@ -38,6 +39,7 @@ RFtest2:
   max_depth: 10
   exclude_outlier: false
   description: +C2
+  delta_prop: 1
   simulations:
   - C2
   - C3
@@ -65,6 +67,7 @@ RFtest3:
   max_depth: 10
   exclude_outlier: false
   description: +C2-C4
+  delta_prop: 1
   simulations:
   - C2
   - C3
@@ -91,6 +94,7 @@ RFtest4:
   max_depth: 10
   exclude_outlier: false
   description: -C3-C10-C12-C15
+  delta_prop: 1
   simulations:
   - C4
   - C5
@@ -113,6 +117,7 @@ RFtest5:
   max_depth: 10
   exclude_outlier: false
   description: -C3-C4-C5-C6
+  delta_prop: 1
   simulations:
   - C7
   - C8
@@ -135,6 +140,7 @@ RFtest6:
   max_depth: 10
   exclude_outlier: false
   description: feedback +delta
+  delta_prop: 1
   simulations: *id002
 RFtest7:
   mode: RF
@@ -148,6 +154,7 @@ RFtest7:
   max_depth: 10
   exclude_outlier: false
   description: feedback -delta
+  delta_prop: 1
   simulations: *id002
 RFtest8:
   mode: RF
@@ -161,6 +168,7 @@ RFtest8:
   max_depth: 10
   exclude_outlier: false
   description: feedback +0.1
+  delta_prop: 1
   simulations: *id002
 RFtest9:
   mode: RF
@@ -174,6 +182,7 @@ RFtest9:
   max_depth: 10
   exclude_outlier: false
   description: feedback -0.1
+  delta_prop: 1
   simulations: *id002
 RFtest10:
   mode: RF
@@ -187,6 +196,7 @@ RFtest10:
   max_depth: 10
   exclude_outlier: false
   description: feedback +0.2
+  delta_prop: 1
   simulations: *id002
 RFtest11:
   mode: RF
@@ -200,6 +210,7 @@ RFtest11:
   max_depth: 10
   exclude_outlier: false
   description: feedback -0.2
+  delta_prop: 1
   simulations: *id002
 RFtest12:
   mode: RF
@@ -213,6 +224,7 @@ RFtest12:
   max_depth: 10
   exclude_outlier: false
   description: feedback +0.3
+  delta_prop: 1
   simulations: *id002
 RFtest13:
   mode: RF
@@ -226,6 +238,7 @@ RFtest13:
   max_depth: 10
   exclude_outlier: false
   description: feedback -0.3
+  delta_prop: 1
   simulations: *id002
 RFtest14:
   mode: RF
@@ -241,6 +254,7 @@ RFtest14:
   max_depth: 10
   exclude_outlier: false
   description: noise level 0.1
+  delta_prop: 1
   simulations: *id002
 RFtest15:
   mode: RF
@@ -256,6 +270,7 @@ RFtest15:
   max_depth: 10
   exclude_outlier: false
   description: noise level 0.01
+  delta_prop: 1
   simulations: *id002
 RFtest16:
   mode: RF
@@ -269,6 +284,7 @@ RFtest16:
   max_depth: 10
   exclude_outlier: false
   description: all simulations
+  delta_prop: 1
   simulations:
   - C1
   - C2
@@ -297,6 +313,7 @@ RFtest17:
   max_depth: 10
   exclude_outlier: false
   description: leaf size 1000
+  delta_prop: 1
   simulations: *id002
 RFtest18:
   mode: RF
@@ -312,4 +329,33 @@ RFtest18:
   max_depth: 10
   exclude_outlier: false
   description: noise 0.01+leaf 1000
+  delta_prop: 1
+  simulations: *id002
+RFtest19:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: +delta
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: feedback +2delta
+  delta_prop: 2
+  simulations: *id002
+RFtest20:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: -delta
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: feedback -2delta
+  delta_prop: 2
   simulations: *id002

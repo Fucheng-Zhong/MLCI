@@ -5,7 +5,7 @@ import seaborn as sns
 
 proportions = {'R_corr':0.2, 'Mgas':0.5, 'L':1.0, 'T':0.5}
 
-def agn_corrected_data(delta='median', bin_num=20, proportional=False):
+def agn_corrected_data(delta='median', bin_num=20, proportional=False, delta_prop=1):
     simulated_data = preprocess.simulated_data()
     simulated_c8a1 = simulated_data[simulated_data['label'] == 'C8a1']
     simulated_c8a2 = simulated_data[simulated_data['label'] == 'C8a2']
@@ -36,11 +36,11 @@ def agn_corrected_data(delta='median', bin_num=20, proportional=False):
             elif len(subset_c8)==0 or len(subset_c8a1)==0 or len(subset_c8a2)==0:
                 delta_plus[key][i] = delta_minus[key][i] = 0
             elif delta == 'median':
-                delta_plus[key][i] = np.median(subset_c8[key]) - np.median(subset_c8a2[key]) 
-                delta_minus[key][i] = np.median(subset_c8[key]) - np.median(subset_c8a1[key])
+                delta_plus[key][i] = delta_prop*(np.median(subset_c8[key]) - np.median(subset_c8a2[key])) 
+                delta_minus[key][i] = delta_prop*(np.median(subset_c8[key]) - np.median(subset_c8a1[key]))
             elif delta == 'mean':
-                delta_plus[key][i] = np.mean(subset_c8[key]) - np.mean(subset_c8a2[key]) 
-                delta_minus[key][i] = np.mean(subset_c8[key]) - np.mean(subset_c8a1[key])
+                delta_plus[key][i] = delta_prop*(np.mean(subset_c8[key]) - np.mean(subset_c8a2[key])) 
+                delta_minus[key][i] = delta_prop*(np.mean(subset_c8[key]) - np.mean(subset_c8a1[key]))
 
     exclude_set = ['HR', 'C8a1', 'C8a2']
     mask = ~np.isin(simulated_data['label'], exclude_set)

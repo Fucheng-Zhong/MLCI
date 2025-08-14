@@ -4,6 +4,7 @@ import os
 
 benchmark = {'mode':'RF', 'R_type':'R_corr', 'agn_feedback':0.0, 'proportional':True, 'noise_level':[1/3, 1/20],
             'leaf_size':1e4, 'max_num':1e4, 'sample_num':100, 'max_depth':10, 'exclude_outlier':False, 'description':'Fiducial',
+            'delta_prop':1,
             'simulations': [f'C{i+3}' for i in range(13)]}
 test_set = {}
 # observed level error, ordinary agn feedback, different simulations
@@ -86,6 +87,17 @@ test_set['RFtest18'] = benchmark.copy()
 test_set['RFtest18']['leaf_size'] = 1e3
 test_set['RFtest18']['noise_level'] = [0.01, 0.01]
 test_set['RFtest18']['description'] = 'noise 0.01+leaf 1000'
+
+test_set['RFtest19'] = benchmark.copy()
+test_set['RFtest19']['agn_feedback'] = '+delta'
+test_set['RFtest19']['delta_prop'] = 2
+test_set['RFtest19']['description'] = 'feedback +2delta'
+
+
+test_set['RFtest20'] = benchmark.copy()
+test_set['RFtest20']['agn_feedback'] = '-delta'
+test_set['RFtest20']['delta_prop'] = 2
+test_set['RFtest20']['description'] = 'feedback -2delta'
 
 
 class YamlCreator:

@@ -52,10 +52,10 @@ def test_configuration(model_name, config):
             simulated_data=preprocess.simulated_data(fac1=config['noise_level'][0], fac2=config['noise_level'][1])
 
     elif config['agn_feedback'] == '+delta':
-        simulated_data_plus, simulated_data_minus, delta_plus, delta_minus = agn_feedback.agn_corrected_data()
+        simulated_data_plus, simulated_data_minus, delta_plus, delta_minus = agn_feedback.agn_corrected_data(delta_prop=config['delta_prop'])
         simulated_data = simulated_data_plus
     elif config['agn_feedback'] == '-delta':
-        simulated_data_plus, simulated_data_minus, delta_plus, delta_minus = agn_feedback.agn_corrected_data()
+        simulated_data_plus, simulated_data_minus, delta_plus, delta_minus = agn_feedback.agn_corrected_data(delta_prop=config['delta_prop'])
         simulated_data = simulated_data_minus
     
 
@@ -208,4 +208,5 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        test_configuration(model_name, config)
+        if model_name == "RFtest19" or model_name == "RFtest20":
+            test_configuration(model_name, config)
