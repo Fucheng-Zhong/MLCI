@@ -359,3 +359,17 @@ RFtest20:
   description: feedback -2delta
   delta_prop: 2
   simulations: *id002
+RFtest21:
+  mode: NB
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: Fiducial
+  delta_prop: 1
+  simulations: *id002

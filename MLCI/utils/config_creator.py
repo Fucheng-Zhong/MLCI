@@ -1,7 +1,6 @@
 import yaml
 import os
 
-
 benchmark = {'mode':'RF', 'R_type':'R_corr', 'agn_feedback':0.0, 'proportional':True, 'noise_level':[1/3, 1/20],
             'leaf_size':1e4, 'max_num':1e4, 'sample_num':100, 'max_depth':10, 'exclude_outlier':False, 'description':'Fiducial',
             'delta_prop':1,
@@ -98,6 +97,10 @@ test_set['RFtest20'] = benchmark.copy()
 test_set['RFtest20']['agn_feedback'] = '-delta'
 test_set['RFtest20']['delta_prop'] = 2
 test_set['RFtest20']['description'] = 'feedback -2delta'
+
+test_set['RFtest21'] = benchmark.copy()
+test_set['RFtest21']['mode'] = 'NB'
+
 
 
 class YamlCreator:

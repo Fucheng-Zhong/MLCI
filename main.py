@@ -116,6 +116,8 @@ def test_configuration(model_name, config):
         classifier.training()
     elif config['mode'] == 'NB':
         classifier.calculate_likelihood()
+    else:
+        raise ValueError("mode should be RF or NB")
     # validations
     classifier.test_data = valid_data
     results = classifier.points(output_name=f"./results/{config['model_name']}/mix_simulations.csv", show_acc=True)
@@ -177,16 +179,17 @@ def test_configuration(model_name, config):
         print(output_line)
 
     # features importance
-    impur_importance = features_importance.get_impurity_importance(model_name, column_rangs=cols)
-    permu_importances = features_importance.get_permutation_importance(model_name, valid_data, column_rangs=cols)
-    #=== normalize the permu_importances
-    norm = np.sum(permu_importances['permutation_importance'])
-    permu_importances['permutation_importance'] = permu_importances['permutation_importance']/norm
-    permu_importances['permutation_importance_std'] = permu_importances['permutation_importance_std']/norm
-    importances = impur_importance.merge(permu_importances, on='Feature', how='left')
-    importances.to_csv(f'./results/{model_name}/feature_importance.csv')
-    importances = pd.read_csv(f'./results/{model_name}/feature_importance.csv')
-    features_importance.plot(f'./figures/{model_name}/feature_importance.pdf', importances)
+    if config['mode'] == 'RF':
+        impur_importance = features_importance.get_impurity_importance(model_name, column_rangs=cols)
+        permu_importances = features_importance.get_permutation_importance(model_name, valid_data, column_rangs=cols)
+        #=== normalize the permu_importances
+        norm = np.sum(permu_importances['permutation_importance'])
+        permu_importances['permutation_importance'] = permu_importances['permutation_importance']/norm
+        permu_importances['permutation_importance_std'] = permu_importances['permutation_importance_std']/norm
+        importances = impur_importance.merge(permu_importances, on='Feature', how='left')
+        importances.to_csv(f'./results/{model_name}/feature_importance.csv')
+        importances = pd.read_csv(f'./results/{model_name}/feature_importance.csv')
+        features_importance.plot(f'./figures/{model_name}/feature_importance.pdf', importances)
 
     output_line = f"End time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
     output_txt = output_txt + output_line + '\n'
@@ -208,5 +211,5 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == "RFtest19" or model_name == "RFtest20":
+        if model_name == "RFtest21":
             test_configuration(model_name, config)

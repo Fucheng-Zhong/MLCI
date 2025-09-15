@@ -31,6 +31,7 @@ planck18_cosmology = {'Omega_medians':0.315, 'Omega_lower_errors':0.007, 'Omega_
                     'OmegaB_medians':0.0224/h0**2, 'OmegaB_lower_errors':0.0001/h0**2, 'OmegaB_upper_errors':0.0001/h0**2}
 
 
+
 def plot_distribution(dataset, labels=labels, col_rangs=col_rangs, fname=''):
     vars = col_rangs.keys()
     xrangs = col_rangs.values()
@@ -148,7 +149,7 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
                         truth_kwargs = truth_kwargs,
                         fig=figure,
                         )
-    corner.overplot_points(figure, sim_catalog[output_labels].values, color='blue')
+    corner.overplot_points(figure, sim_catalog[output_labels].values, color='blue', alpha=0.5, markersize=10,)
     if ref_point == 'None':
         show_text = f'Input: {test_set}\n Output: {", ".join(label_names)}\n Model name: {model_name}\n'
     elif ref_point == "Planck2018":
