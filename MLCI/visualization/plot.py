@@ -213,7 +213,7 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
 
 def get_expectation_1sigam(results, model_name, catalog_name):
     samples, weights = results[output_para_name], results['weight']
-    quantiles = [0.16, 0.5, 0.84]
+    quantiles = [0.16, 0.50, 0.84]
     final_res = {'Model Name':model_name, 'Catalog':catalog_name}
     for i in range(len(output_para_name)):
         values = corner.quantile(samples.values[:, i], quantiles, weights=weights)
@@ -344,22 +344,28 @@ def plot_cosmology_paras_vs_z(bins_cosmology, aveg_cosmology, fname='./figures/t
     plt.savefig(fname)
 
 
-def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8):
+def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8, L0=None, chi2_range=None):
     cosmology_paras = []
+    signif = []
+    significant = Table.read('results/sinificants_no_R500.fits')
     for model_name in model_names:
         results = pd.read_csv(f"./results/{model_name}/observation.csv")
-        subset = results[(results['z'] >= z_0) & (results['z'] < z_1)]
+        if L0 is not None:
+            subset = results[(results['z'] >= z_0) & (results['z'] < z_1) & (results['L']>=L0)]
+        else:
+            subset = results[(results['z'] >= z_0) & (results['z'] < z_1)]
         paras = get_expectation_1sigam(subset, model_name, 'observation')
         cosmology_paras.append(paras)
+        signif.append(significant[significant['model_name']==model_name]['chi2'].data)
     ref_cosmology = planck18_cosmology
-    
     cosmology_paras = Table(cosmology_paras)
+    significant = np.concatenate(signif)
 
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
     label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
 
-    fig, axes = plt.subplots(nrows=1, ncols=4, sharey=True, figsize=(12, 8), gridspec_kw={'wspace': 0})
-    for para_name, label, ax in zip(para_names, label_names, axes):
+    fig, axes = plt.subplots(nrows=1, ncols=5, sharey=True, figsize=(12, 8), gridspec_kw={'wspace': 0})
+    for para_name, label, ax in zip(para_names, label_names, axes[0:4]):
         test_num = np.arange(len(cosmology_paras))
         value = cosmology_paras[f'{para_name}_medians']
         value_err = np.array([cosmology_paras[f'{para_name}_lower_errors'], cosmology_paras[f'{para_name}_upper_errors']])
@@ -370,6 +376,12 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/par
         h0, err = ref_value, 0.003
         ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value - ref_low_error, ref_value + ref_up_error, color='orange', alpha=0.4, label='Planck2018, 1$\sigma$')
         ax.set_xlabel(label)
+    
+    axes[-1].barh(test_num, significant, color="skyblue")
+    axes[-1].set_xlabel(f'$\chi^2$')
+    if chi2_range is not None:
+        axes[-1].set_xlim(chi2_range[0], chi2_range[1]) 
+
     
     if len(show_name) == 0:
         show_name = model_names

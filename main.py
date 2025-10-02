@@ -22,7 +22,7 @@ def exclude_out(xlabel, ylabel, data, percent=5):
     data_slectded = data[mask_inside]
     return data_slectded
 
-def test_configuration(model_name, config):
+def test_configuration(model_name, config, training):
     output_txt = ''
     start_time = time.time()
     output_line = f"Start time: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
@@ -31,6 +31,8 @@ def test_configuration(model_name, config):
     print(config)
     config['model_name'] = model_name
     cols = {config['R_type']:[2.5, 3.5], 'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]}
+    if 'z' in config.keys():
+        cols['z'] = config['z']
     print(f"model_name: {config['model_name']} \n", cols)
     vars_name = list(cols.keys())
     if not os.path.exists(f"models/{config['model_name']}"):
@@ -112,12 +114,8 @@ def test_configuration(model_name, config):
     classifier.train_data = train_data
     classifier.config['input_column_rangs'] = cols
     classifier.config['model_name'] = model_name
-    if config['mode'] == 'RF':
+    if training:
         classifier.training()
-    elif config['mode'] == 'NB':
-        classifier.calculate_likelihood()
-    else:
-        raise ValueError("mode should be RF or NB")
     # validations
     classifier.test_data = valid_data
     results = classifier.points(output_name=f"./results/{config['model_name']}/mix_simulations.csv", show_acc=True)
@@ -138,6 +136,8 @@ def test_configuration(model_name, config):
     results = pd.read_csv(f"./results/{config['model_name']}/observation.csv")
     for i in range(len(redshift_bin)-1):
         subset = results[(results['z'] >= redshift_bin[i]) & (results['z'] < redshift_bin[i+1])]
+        if len(subset) <= config['sample_num']:
+            continue
         print(f"redshift: {redshift_bin[i]} - {redshift_bin[i+1]}, num={len(subset)}")
         fname = f"figures/{config['model_name']}/observation_z={redshift_bin[i]:.1f}_{redshift_bin[i+1]:.1f}.pdf"
         plot.plot_corner(subset, ref_point='Planck2018', test_set='observed_samples', fname=fname, show_cos_name=False)
@@ -155,6 +155,8 @@ def test_configuration(model_name, config):
     results = pd.read_csv(f"./results/{model_name}/observation.csv")
     for i in range(len(redshift_bin)-1):
         subset = results[(results['z'] >= redshift_bin[i]) & (results['z'] < redshift_bin[i+1])]
+        if len(subset) <= config['sample_num']:
+            continue
         print(f"redshift: {redshift_bin[i]} - {redshift_bin[i+1]}, num={len(subset)}")
         fname = f"RF_{model_name}_z={redshift_bin[i]:.1f}_{redshift_bin[i+1]:.1f}"
         cosmology_para = plot.get_expectation_1sigam(subset, model_name, model_name)
@@ -211,5 +213,5 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == "RFtest21":
-            test_configuration(model_name, config)
+        if model_name == "RFtest32" or  model_name == "RFtest33":
+            test_configuration(model_name, config, training=True)

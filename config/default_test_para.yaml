@@ -373,3 +373,266 @@ RFtest21:
   description: Fiducial
   delta_prop: 1
   simulations: *id002
+RFtest22:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: +C2-C12-C13-C14-C15
+  delta_prop: 1
+  simulations:
+  - C2
+  - C3
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+RFtest23:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 4000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: +C2_4k
+  delta_prop: 1
+  simulations:
+  - C2
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+RFtest24:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: z<0.5
+  delta_prop: 1
+  simulations: *id002
+  z:
+  - 0.0
+  - 0.5
+RFtest25:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 4000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: +C2_4k_z<0.5
+  delta_prop: 1
+  simulations:
+  - C2
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+  z:
+  - 0.0
+  - 0.5
+RFtest26:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: +C2-C13-C14-C15
+  delta_prop: 1
+  simulations:
+  - C2
+  - C3
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+RFtest27:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 0.2<z<0.9
+  delta_prop: 1
+  simulations: *id002
+  z:
+  - 0.2
+  - 0.9
+RFtest28:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 0.2<z<0.8
+  delta_prop: 1
+  simulations: *id002
+  z:
+  - 0.2
+  - 0.8
+RFtest29:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 0.2<z<0.7
+  delta_prop: 1
+  simulations: *id002
+  z:
+  - 0.2
+  - 0.7
+RFtest30:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 0.3<z<0.5
+  delta_prop: 1
+  simulations: *id002
+  z:
+  - 0.3
+  - 0.5
+RFtest31:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: -C13-C14-C15
+  delta_prop: 1
+  simulations:
+  - C3
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+RFtest32:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 4000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 4k
+  delta_prop: 1
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+RFtest33:
+  mode: RF
+  R_type: R_corr
+  agn_feedback: 0.0
+  proportional: true
+  noise_level: *id001
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: -C12-C13-C14-C15
+  delta_prop: 1
+  simulations:
+  - C3
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
