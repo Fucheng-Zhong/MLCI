@@ -36,14 +36,17 @@ def plot_distribution(dataset, labels=labels, col_rangs=col_rangs, fname=''):
     vars = col_rangs.keys()
     xrangs = col_rangs.values()
     f_size = 14
-    fig, axs = plt.subplots(1, 5, figsize=(20, 5), dpi=160)
+    fig, axs = plt.subplots(1, len(col_rangs.keys()), figsize=(4*len(col_rangs.keys()), 5), dpi=160)
     for var, ax, xrang in zip(vars, axs, xrangs):
         bw = (xrang[1] - xrang[0])/20
         for label, data, color in zip(labels, dataset, colors):
             label = label
             sns.histplot(data[var], ax=ax, kde=False, label=label, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
             ax.set_yscale('log')
-        ax.set_xlabel(data[var].unit)
+        if hasattr(data[var], 'unit'):
+            ax.set_xlabel(str(data[var].unit))
+        else:
+            ax.set_xlabel(var)
         x0, x1 = np.round(xrang[0],1), np.round(xrang[1],1)
         ax.legend(title=f'Density of {var} \nRange: {x0} -- {x1}',  framealpha=0.1, fontsize=f_size) #
         ax.set_ylabel('')
@@ -85,6 +88,11 @@ def plot_confusion_matrix(results, title='test', fname='', rerange='', normalize
         fname = f'figures/CM_{title}.pdf'
     plt.savefig(fname, bbox_inches='tight')
     plt.close()
+    csv_name = fname.replace('.pdf', '.csv')   # 同名 CSV 文件
+    confusion_matrix.to_csv(csv_name, float_format='%.6f')
+    diag_values = confusion_matrix.values.diagonal()
+    print(fname, ' Diagonal values:', diag_values)
+    return confusion_matrix.values
 
 
 
@@ -254,7 +262,7 @@ def scalling_relation(xlabel, ylabel, simulated_data, observed_data, simulation_
 
 
 
-def corner_plot(xlabels, simulated_data, observed_data, simulation_label):
+def corner_plot(xlabels, simulated_data, observed_data, simulation_label=None, fname='./figures/custom_corner_plot.pdf'):
     n = len(xlabels)
     fig, axes = plt.subplots(n, n, figsize=(3*n, 3*n))
     for i in range(n):
@@ -265,7 +273,10 @@ def corner_plot(xlabels, simulated_data, observed_data, simulation_label):
                 continue
             elif i == j:
                 # 对角线可以画 histogram 或 KDE
-                x_sim = simulated_data[simulated_data['label'] == simulation_label][xlabels[i]]
+                if simulation_label is not None:
+                    x_sim = simulated_data[simulated_data['label'] == simulation_label][xlabels[i]]
+                else:
+                    x_sim = simulated_data[xlabels[i]]
                 x_obs = observed_data[xlabels[i]]
                 bins = np.histogram_bin_edges(np.concatenate([x_sim, x_obs]), bins='auto')
                 sns.histplot(x_sim, ax=ax, kde=False, label=f'Simulated={simulation_label}', palette='dark', color='red', stat="density", alpha=0.4, bins=bins)
@@ -279,8 +290,12 @@ def corner_plot(xlabels, simulated_data, observed_data, simulation_label):
             else:
                 xlabel = xlabels[j]
                 ylabel = xlabels[i]
-                x_sim = simulated_data[simulated_data['label']==simulation_label][xlabel].data
-                y_sim = simulated_data[simulated_data['label']==simulation_label][ylabel].data
+                if simulation_label is not None:
+                    x_sim = simulated_data[simulated_data['label']==simulation_label][xlabel].data
+                    y_sim = simulated_data[simulated_data['label']==simulation_label][ylabel].data
+                else:
+                    x_sim = simulated_data[xlabel].data
+                    y_sim = simulated_data[ylabel].data
                 sns.scatterplot(x=x_sim, y=y_sim, s=2, color='red', ax=ax)
                 sns.kdeplot(x=x_sim, y=y_sim, ax=ax, levels=[0.16, 0.50, 0.84], color='red', linewidths=1, label=f'Simulated={simulation_label}')
                 x_obs = observed_data[xlabel].data
@@ -288,27 +303,34 @@ def corner_plot(xlabels, simulated_data, observed_data, simulation_label):
                 sns.scatterplot(x=x_obs, y=y_obs, s=2, color='blue', ax=ax)
                 sns.kdeplot(x=x_obs, y=y_obs, ax=ax, levels=[0.16, 0.50, 0.84], color='blue', linewidths=1,  label='(eFEDS+DR1)')
                 if j == 0:
-                    ax.set_ylabel(simulated_data[ylabel].unit)
+                    #ax.set_ylabel(simulated_data[ylabel].unit)
+                    ax.set_ylabel(ylabel)
                 if i == (n-1):
-                    ax.set_xlabel(simulated_data[xlabel].unit)
+                    #ax.set_xlabel(simulated_data[xlabel].unit)
+                    ax.set_xlabel(xlabel)
                 plt.legend()      
     plt.subplots_adjust(wspace=0.05, hspace=0.05)
     #plt.tight_layout()
-    plt.savefig('./figures/custom_corner_plot.pdf')
+    plt.savefig(fname)
     plt.show()
 
 
-def plot_detection_prob(observed_data, fname=''):
+def plot_detection_prob(dataset, labels, colors, fname=''):
     L_vals = np.logspace(41, 46.0, 100)  # 光度范围
     z_vals = np.linspace(0.01, 1.4, 100)
     # 构建二维网格
     L_grid, z_grid = np.meshgrid(L_vals, z_vals)
     S_grid = model_new.selection_function(np.log10(L_grid), z_grid)
     plt.figure(figsize=(8, 5))
-    contour = plt.contourf(z_grid, np.log10(L_grid), S_grid, levels=50, cmap='viridis')
-    cbar = plt.colorbar(contour)
-    cbar.set_label('probability')
-    plt.scatter(observed_data['z'], observed_data['L'], color='red', s=5, marker='x', label='eFEDS+DR1')
+    contour = plt.contour(z_grid, np.log10(L_grid), S_grid, levels=[0.1, 0.3, 0.5, 0.7, 0.9], alpha=1.0, linestyles='-.', colors='black', linewidths=0.6,)
+    plt.clabel(contour, fmt='%.2f')
+    #contour = plt.contourf(z_grid, np.log10(L_grid), S_grid, levels=10, cmap='viridis')
+    #cbar = plt.colorbar(contour)
+    #cbar.set_label('probability')
+    for data, label, color in zip(dataset, labels, colors):
+        plt.scatter(data['z'], data['L'], color=color, s=2, marker='+', label=label)
+    data = dataset[0]
+    sns.kdeplot(x=data['z'],y=data['L'], levels=[0.16, 0.50, 0.84],  linewidths=0.6, linestyles='-', fill=False, colors='black')
     plt.ylabel('Log10(L / erg s-1)')
     plt.xlabel('$z$')
     plt.xlim(0, 1.4)
@@ -320,36 +342,127 @@ def plot_detection_prob(observed_data, fname=''):
         fname = f'./figures/test_detection_prob.pdf'
     plt.savefig(fname)
 
+def plot_detection_prob_and_cosmology_vs_Z():
+    pass
 
-def plot_cosmology_paras_vs_z(bins_cosmology, aveg_cosmology, fname='./figures/test_Cosmological_Parameters_vs_z.pdf'):
+
+def obtain_binned_cosmology(model_name, z_bins_edge=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]):
+    model_name = 'RFtest1'
+    results = pd.read_csv(f"./results/{model_name}/observation.csv")
+    z_0, z_1 = 0.2, 0.8
+    results = results[(results['z'] >= z_0) & (results['z'] < z_1)]
+    # plot the cosmological parameters vs redshift
+    bins_cosmology = []
+    z_bins_edge = np.array(z_bins_edge)
+    aveg_cosmology = get_expectation_1sigam(results, model_name, model_name)
+    for i in range(len(z_bins_edge)-1):
+        subset = results[(results['z'] >= z_bins_edge[i]) & (results['z'] < z_bins_edge[i+1])]
+        if len(subset) <= 0:
+            continue
+        print(f"redshift: {z_bins_edge[i]} - {z_bins_edge[i+1]}, num={len(subset)}")
+        cosmology_para = get_expectation_1sigam(subset, model_name, model_name)
+        cosmology_para['z'] = (z_bins_edge[i] + z_bins_edge[i+1])/2
+        bins_cosmology.append(cosmology_para)
+    aveg_cosmology['z'] = z_bins_edge
+    return Table(bins_cosmology), aveg_cosmology
+
+
+def plot_cosmology_paras_vs_z(model_name, z_bins_edge, fname='./figures/test_Cosmological_Parameters_vs_z.pdf'):
+    bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge)
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
     label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
+    colors = ['blue', 'orange', 'green', 'red']
     plt.figure(figsize=(8, 5))
-
-    xoffsets = np.linspace(-0.02, 0.02, len(para_names)) 
+    plt.tick_params(axis='both', which='major', labelsize=16)  
+    plt.tick_params(axis='both', which='minor', labelsize=16)
+    xoffsets = np.linspace(-0.02, 0.02, len(para_names))
+    '''
     for para_name, label, x_off in zip(para_names, label_names, xoffsets):
         x = bins_cosmology['z'].data + x_off
         y = bins_cosmology[f'{para_name}_medians'].data
         yerr = np.array([bins_cosmology[f'{para_name}_lower_errors'], bins_cosmology[f'{para_name}_upper_errors']])
         norm_value = aveg_cosmology[f'{para_name}_medians']
         plt.errorbar(x, y/norm_value, yerr=yerr/norm_value, fmt='o', capsize=4, label=label)
-
-    plt.legend()
-    plt.axhline(y=1, color='red', linestyle='--', linewidth=1)
-    plt.xlabel('$z$')
-    plt.ylabel('Bin Meadian / Meadian')
-    plt.title('Cosmological Parameters vs Redshift')
-    plt.legend(title='Parameters')
+    '''
+    for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
+        x = bins_cosmology['z'].data + x_off
+        y_uperr = bins_cosmology[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
+        y_lowerr = bins_cosmology[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
+        diff = bins_cosmology[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
+        norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
+        y = diff / norm_err
+        plt.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=4, label=label, color=color)
+    plt.axhline(y=0.0, color='black', linestyle=':', linewidth=1)
+    plt.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
+    plt.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
+    plt.xlabel('$z$', fontsize=18)
+    plt.ylabel('bias (error) / 1$\sigma$', fontsize=18)
+    plt.title('Cosmological Parameters vs Redshift',fontsize=18)
+    plt.legend(title='Parameters',fontsize=14, title_fontsize=16)
     plt.tight_layout()
     plt.savefig(fname)
 
 
-def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8, L0=None, chi2_range=None):
+def plot_detection_prob_and_cosmology_vs_z(dataset, labels, colors, alphas, model_name, z_bins_edge, fname=''):
+
+    z_0, z_1 = 0.0, 1.0
+    fig, axes = plt.subplots(2, 1, figsize=(8,6), sharex=True)
+    plt.tick_params(axis='both', which='major', labelsize=16)  
+    plt.tick_params(axis='both', which='minor', labelsize=16)
+    ax1 = axes[0]
+    L_vals = np.logspace(41, 46.0, 100) 
+    z_vals = np.linspace(0.01, 1.4, 100)
+    L_grid, z_grid = np.meshgrid(L_vals, z_vals)
+    S_grid = model_new.selection_function(np.log10(L_grid), z_grid)
+    contour = ax1.contour(z_grid, np.log10(L_grid), S_grid, levels=[0.1, 0.3, 0.5, 0.7, 0.9], alpha=1.0, linestyles='-.', colors='black', linewidths=0.6,)
+    ax1.clabel(contour, fmt='%.2f')
+    for data, label, color, alpha in zip(dataset, labels, colors, alphas):
+        ax1.scatter(data['z'], data['L'], color=color, s=2, alpha=alpha, marker='+', label=label)
+    data = dataset[0]
+    sns.kdeplot(x=data['z'],y=data['L'], ax=ax1, levels=[0.16, 0.50, 0.84],  linewidths=0.6, linestyles='-', fill=False, colors='black')
+    ax1.set_ylabel('Log10(L / erg s-1)', fontsize=18)
+    ax1.set_xlim(z_0, z_1)
+    ax1.set_ylim(41, 46)
+    ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5)
+
+    ax2 = axes[1]
+    bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge)
+    para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
+    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
+    colors = ['blue', 'orange', 'green', 'red']
+    xoffsets = np.linspace(-0.02, 0.02, len(para_names))
+    for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
+        x = bins_cosmology['z'].data + x_off
+        y_uperr = bins_cosmology[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
+        y_lowerr = bins_cosmology[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
+        diff = bins_cosmology[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
+        norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
+        y = diff / norm_err
+        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=4, label=label, color=color)
+    ax2.axhline(y=0.0, color='black', linestyle=':', linewidth=1)
+    ax2.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
+    ax2.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
+    ax2.set_xlabel('$z$', fontsize=18)
+    ax2.set_ylabel('bias (error) / 1$\sigma$', fontsize=18)
+    ax2.legend(title='Cosmological',fontsize=14, title_fontsize=16, markerscale=1)
+    plt.tight_layout()
+    if fname == '':
+        fname = f'./figures/test_detection_prob_cosmology_vs_z.pdf'
+    plt.savefig(fname)
+
+
+    
+
+
+def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8, L0=None, significant='results/sinificants.fits', chi2_range=None, chi2_opt='normal_chi2', ref_chi_name='ref'):
     cosmology_paras = []
-    signif = []
-    significant = Table.read('results/sinificants_no_R500.fits')
-    for model_name in model_names:
-        results = pd.read_csv(f"./results/{model_name}/observation.csv")
+    signif, dof = [], []
+    significant = Table.read(significant)
+    for model_name, k in zip(model_names, keff):
+        if model_name == 'synthesis':
+            results = pd.read_csv(f"./results/RFtest1/observation.csv")
+        else:
+            results = pd.read_csv(f"./results/{model_name}/observation.csv")
         if L0 is not None:
             subset = results[(results['z'] >= z_0) & (results['z'] < z_1) & (results['L']>=L0)]
         else:
@@ -357,10 +470,21 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/par
         paras = get_expectation_1sigam(subset, model_name, 'observation')
         cosmology_paras.append(paras)
         signif.append(significant[significant['model_name']==model_name]['chi2'].data)
+        dof.append(significant[significant['model_name']==model_name]['dof'].data - k)
     ref_cosmology = planck18_cosmology
     cosmology_paras = Table(cosmology_paras)
-    significant = np.concatenate(signif)
-
+    subset_significant = np.concatenate(signif)
+    subset_dof = np.concatenate(dof)
+    subset_significant = subset_significant/subset_dof
+    ref_chi2 = significant[significant['model_name']==ref_chi_name]['chi2'].data/significant[significant['model_name']==ref_chi_name]['dof'].data
+    ref_chi2 = ref_chi2[0]
+    fic_chi2 = subset_significant[0]
+    if chi2_opt == 'new_chi2':
+        subset_significant = (ref_chi2-subset_significant)/(ref_chi2-fic_chi2)
+    elif chi2_opt == 'normal_chi2':
+        subset_significant = subset_significant/fic_chi2
+    else:
+        raise ValueError('chi2_opt should be new_chi2 or normal_chi2')
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
     label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
 
@@ -377,8 +501,11 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], fname='./figures/par
         ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value - ref_low_error, ref_value + ref_up_error, color='orange', alpha=0.4, label='Planck2018, 1$\sigma$')
         ax.set_xlabel(label)
     
-    axes[-1].barh(test_num, significant, color="skyblue")
-    axes[-1].set_xlabel(f'$\chi^2$')
+    axes[-1].axvline(x=0, color='r', linestyle='--', linewidth=2, label='best fits')
+    axes[-1].axvline(x=1, color='r', linestyle='--', linewidth=2,)
+    axes[-1].barh(test_num, subset_significant, color="skyblue")
+    #axes[-1].set_xlabel(f'normalized $\chi^2$')
+    axes[-1].set_xlabel(f'Significance')
     if chi2_range is not None:
         axes[-1].set_xlim(chi2_range[0], chi2_range[1]) 
 

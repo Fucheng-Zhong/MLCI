@@ -121,14 +121,17 @@ def test_configuration(model_name, config, training):
     results = classifier.points(output_name=f"./results/{config['model_name']}/mix_simulations.csv", show_acc=True)
     ture_label = classifier.test_data['label'].values
     plot.plot_corner(results, ref_point='C8', test_set='Mix', fname=f"figures/{config['model_name']}/mix_simulations.pdf", show_cos_name=False)
-    plot.plot_confusion_matrix(results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
+    confusion_matrix = plot.plot_confusion_matrix(results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
     plot.plot_detection_prob(observed_data, fname=f"figures/{config['model_name']}/detection_prob.pdf")
     
     # prediction and show contours
-    classifier.test_data = observed_boost_sample
+    if config['boost_real']:
+        classifier.test_data = observed_boost_sample
+    else:
+        classifier.test_data = observed_data
     classifier.config['weight'] = True
     classifier.config['p_threshold'] = 0.0
-    results = classifier.points(output_name=f"./results/{config['model_name']}/observation.csv")
+    results = classifier.points(output_name=f"./results/{config['model_name']}/observation.csv", confusion_matrix=confusion_matrix)
     plot.plot_corner(results, ref_point='C8', test_set='observed_samples', fname=f"figures/{config['model_name']}/observation.pdf", show_cos_name=False)
     plot.plot_corner(results, ref_point='Planck2018', smooth=1.0, test_set='observed_samples', fname=f'figures/{config['model_name']}/observation_Planck2018.pdf', show_cos_name=False, show_pdf=False,show_datapoint=False)
     
@@ -205,6 +208,11 @@ def test_configuration(model_name, config, training):
     with open(f"./results/{model_name}/output.txt", "w") as f:
         f.write(output_txt + "\n")
 
+import re
+def extract_last_number(s):
+    m = re.search(r'\d+$', s)
+    return int(m.group()) if m else None
+
 
 if __name__ == "__main__":
     file_name = './config/default_test_para.yaml'
@@ -213,5 +221,6 @@ if __name__ == "__main__":
 
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
-        if model_name == "RFtest32" or  model_name == "RFtest33":
+        test_num = extract_last_number(model_name)
+        if test_num >= 35:
             test_configuration(model_name, config, training=True)

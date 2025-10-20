@@ -5,6 +5,7 @@ benchmark = {'mode':'RF', 'R_type':'R_corr', 'agn_feedback':0.0, 'proportional':
             'leaf_size':1e4, 'max_num':1e4, 'sample_num':100, 'max_depth':10, 'exclude_outlier':False, 'description':'Fiducial',
             'delta_prop':1,
             'simulations': [f'C{i+3}' for i in range(13)],
+            'boost_real':True,
             }
 test_set = {}
 # observed level error, ordinary agn feedback, different simulations
@@ -154,6 +155,21 @@ test_set['RFtest32']['max_num'] = 4e3
 test_set['RFtest33'] = benchmark.copy()
 test_set['RFtest33']['simulations'] = ['C3', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
 test_set['RFtest33']['description'] = '-C12-C13-C14-C15'
+
+
+test_set['RFtest34'] = benchmark.copy()
+test_set['RFtest34']['simulations'] = ['C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C14', 'C15']
+test_set['RFtest34']['description'] = '-C3'
+
+
+test_set['RFtest35'] = benchmark.copy()
+test_set['RFtest35']['description'] = '0.1<z<0.35'
+test_set['RFtest35']['z'] = [0.1, 0.35]
+
+test_set['RFtest36'] = benchmark.copy()
+test_set['RFtest36']['description'] = '0.35<z<0.80'
+test_set['RFtest36']['z'] = [0.35, 0.80]
+
 
 
 class YamlCreator:
