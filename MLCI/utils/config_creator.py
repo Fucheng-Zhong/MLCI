@@ -6,7 +6,9 @@ benchmark = {'mode':'RF', 'R_type':'R_corr', 'agn_feedback':0.0, 'proportional':
             'delta_prop':1,
             'simulations': [f'C{i+3}' for i in range(13)],
             'boost_real':True,
+            'z':[0.0, 1.0], 'L':[43, 46]
             }
+
 test_set = {}
 # observed level error, ordinary agn feedback, different simulations
 test_set['RFtest1'] = benchmark.copy()
@@ -169,6 +171,26 @@ test_set['RFtest35']['z'] = [0.1, 0.35]
 test_set['RFtest36'] = benchmark.copy()
 test_set['RFtest36']['description'] = '0.35<z<0.80'
 test_set['RFtest36']['z'] = [0.35, 0.80]
+
+test_set['RFtest37'] = benchmark.copy()
+test_set['RFtest37']['description'] = 'Lx>43.5'
+test_set['RFtest37']['L'] = [43.5, 46.0]
+
+test_set['RFtest38'] = benchmark.copy()
+test_set['RFtest38']['description'] = 'Lx=44.5-46.0'
+test_set['RFtest38']['L'] = [44.5, 46.0]
+
+test_set['RFtest39'] = benchmark.copy()
+test_set['RFtest39']['description'] = 'Lx=43.0-44.5'
+test_set['RFtest39']['L'] = [43.0, 44.5]
+
+test_set['RFtest40'] = benchmark.copy()
+test_set['RFtest40']['description'] = 'Lx=44.0-46.0'
+test_set['RFtest40']['L'] = [44.0, 46.0]
+
+test_set['RFtest41'] = benchmark.copy()
+test_set['RFtest41']['description'] = 'Lx=43.0-44.0'
+test_set['RFtest41']['L'] = [43.0, 44.0]
 
 
 

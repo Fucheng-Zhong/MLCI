@@ -31,8 +31,10 @@ def test_configuration(model_name, config, training):
     print(config)
     config['model_name'] = model_name
     cols = {config['R_type']:[2.5, 3.5], 'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]}
-    if 'z' in config.keys():
-        cols['z'] = config['z']
+    #======
+    cols['z'] = config['z']
+    cols['L'] = config['L']
+    #======
     print(f"model_name: {config['model_name']} \n", cols)
     vars_name = list(cols.keys())
     if not os.path.exists(f"models/{config['model_name']}"):
@@ -122,7 +124,7 @@ def test_configuration(model_name, config, training):
     ture_label = classifier.test_data['label'].values
     plot.plot_corner(results, ref_point='C8', test_set='Mix', fname=f"figures/{config['model_name']}/mix_simulations.pdf", show_cos_name=False)
     confusion_matrix = plot.plot_confusion_matrix(results, title=classifier.config['model_name'], fname=f"figures/{config['model_name']}/CM.pdf")
-    plot.plot_detection_prob(observed_data, fname=f"figures/{config['model_name']}/detection_prob.pdf")
+    plot.plot_detection_prob([observed_data], labels=['eFEDS+DR1'], colors=['red'], fname=f"figures/{config['model_name']}/detection_prob.pdf")
     
     # prediction and show contours
     if config['boost_real']:
@@ -151,24 +153,7 @@ def test_configuration(model_name, config, training):
     catalog_names ={f"{model_name}_z={z_0:.1f}_{z_1:.1f}": subset,}
     comparision.RF_smooth = 0.6
     comparision.compare(catalog_names, fname=f"./figures/{model_name}/compare_z={z_0:.1f}_{z_1:.1f}.pdf", is_csv=False)
-
-    # plot the cosmological parameters vs redshift
-    bins_cosmology = []
-    redshift_bin = np.array([0.0, 0.2, 0.4, 0.6,  0.8, 1.0])
-    results = pd.read_csv(f"./results/{model_name}/observation.csv")
-    for i in range(len(redshift_bin)-1):
-        subset = results[(results['z'] >= redshift_bin[i]) & (results['z'] < redshift_bin[i+1])]
-        if len(subset) <= config['sample_num']:
-            continue
-        print(f"redshift: {redshift_bin[i]} - {redshift_bin[i+1]}, num={len(subset)}")
-        fname = f"RF_{model_name}_z={redshift_bin[i]:.1f}_{redshift_bin[i+1]:.1f}"
-        cosmology_para = plot.get_expectation_1sigam(subset, model_name, model_name)
-        cosmology_para['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
-        bins_cosmology.append(cosmology_para)
-
-    bins_cosmology = Table(bins_cosmology)
-    aveg_cosmology = plot.get_expectation_1sigam(results, model_name, model_name)
-    plot.plot_cosmology_paras_vs_z(bins_cosmology, aveg_cosmology, fname=f'./figures/{model_name}/Cosmological_Parameters_vs_z.pdf')
+    plot.plot_cosmology_paras_vs_z(model_name, z_bins_edge=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0], fname=f'./figures/{model_name}/Cosmological_Parameters_vs_z.pdf')
     # print the final values of cosmologcal parameters in the redshift ranges [0.1, 0.8]
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
     label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
@@ -222,5 +207,5 @@ if __name__ == "__main__":
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
         test_num = extract_last_number(model_name)
-        if test_num >= 35:
+        if test_num >= 41:
             test_configuration(model_name, config, training=True)

@@ -11,6 +11,7 @@ sns.set_theme(style="ticks", palette="deep")
 from astropy.cosmology import Planck18
 import pandas as pd
 from astropy.table import Table 
+from ..data_processing import preprocess
 
 sim_catalog = model_new.sim_catalog
 output_para_name = model_new.output_para_name
@@ -96,7 +97,7 @@ def plot_confusion_matrix(results, title='test', fname='', rerange='', normalize
 
 
 
-def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf', model_name='RF', show_cos_name=True, show_pdf=True, show_datapoint=True, smooth=0.5, truncation=False):
+def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf', model_name='RF', show_cos_name=True, show_pdf=True, show_datapoint=True, smooth=0.5, truncation=False, selction=True):
     
     prob_cols = [col for col in results.columns if col.startswith('prob_')]
     simulation_names = [col.replace('prob_', '') for col in prob_cols]
@@ -109,7 +110,12 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
         #masks = (results['z'] < 0.10)
         #results['weight'][masks] = 0
     
-    samples, weights, prob = results[output_para_name], results['weight'], results[prob_cols]
+    if selction:
+        samples, weights, prob = results[output_para_name], results['weight'], results[prob_cols]
+    else:
+        samples, weights, prob = results[output_para_name], results['weight'], results[prob_cols]
+        weights = weights*results['detect_prob']
+        # weights = np.ones_like(weights)
     output_labels = output_para_name
     fontsize = {"fontsize": 12}
     contour_args = {'colors': 'blue', 'linestyles': 'dashed', 'linewidths': 2}
@@ -219,8 +225,12 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
     plt.close()
 
 
-def get_expectation_1sigam(results, model_name, catalog_name):
-    samples, weights = results[output_para_name], results['weight']
+def get_expectation_1sigam(results, model_name, catalog_name, selection_fun = True):
+    if selection_fun:
+        samples, weights = results[output_para_name], results['weight']
+    else:
+        samples = results[output_para_name]
+        weights = results['weight']*results['detect_prob']
     quantiles = [0.16, 0.50, 0.84]
     final_res = {'Model Name':model_name, 'Catalog':catalog_name}
     for i in range(len(output_para_name)):
@@ -349,7 +359,7 @@ def plot_detection_prob_and_cosmology_vs_Z():
 def obtain_binned_cosmology(model_name, z_bins_edge=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]):
     model_name = 'RFtest1'
     results = pd.read_csv(f"./results/{model_name}/observation.csv")
-    z_0, z_1 = 0.2, 0.8
+    z_0, z_1 = z_bins_edge[0], z_bins_edge[-1]
     results = results[(results['z'] >= z_0) & (results['z'] < z_1)]
     # plot the cosmological parameters vs redshift
     bins_cosmology = []
@@ -451,6 +461,62 @@ def plot_detection_prob_and_cosmology_vs_z(dataset, labels, colors, alphas, mode
     plt.savefig(fname)
 
 
+
+def plot_simulation_detection_prob_and_cosmology_vs_z(simulation_label, model_name, z_bins_edge, fname=''):
+    observed_data = preprocess.observed_data()
+    simulation_results = pd.read_csv(f"./results/{model_name}/mix_simulations.csv")
+    simulation_results = simulation_results[simulation_results['label']==simulation_label]
+    dataset = [observed_data, simulation_results]
+    labels = ['eFEDS+DR1', f'{simulation_label}']
+    colors = ['orange', 'blue']
+    alphas = [1.0, 0.3]
+    z_0, z_1 = 0.0, 1.0
+    fig, axes = plt.subplots(2, 1, figsize=(8,6), sharex=True)
+    plt.tick_params(axis='both', which='major', labelsize=16)  
+    plt.tick_params(axis='both', which='minor', labelsize=16)
+    ax1 = axes[0]
+    L_vals = np.logspace(41, 46.0, 100) 
+    z_vals = np.linspace(0.01, 1.4, 100)
+    L_grid, z_grid = np.meshgrid(L_vals, z_vals)
+    S_grid = model_new.selection_function(np.log10(L_grid), z_grid)
+    contour = ax1.contour(z_grid, np.log10(L_grid), S_grid, levels=[0.1, 0.3, 0.5, 0.7, 0.9], alpha=1.0, linestyles='-.', colors='black', linewidths=0.6,)
+    ax1.clabel(contour, fmt='%.2f')
+    
+    for data, label, color, alpha in zip(dataset, labels, colors, alphas):
+        ax1.scatter(data['z'], data['L'], color=color, s=2, alpha=alpha, marker='+', label=label)
+    data = dataset[0]
+    sns.kdeplot(x=data['z'],y=data['L'], ax=ax1, levels=[0.16, 0.50, 0.84],  linewidths=0.6, linestyles='-', fill=False, colors='black')
+    ax1.set_ylabel('Log10(L / erg s-1)', fontsize=18)
+    ax1.set_xlim(z_0, z_1)
+    ax1.set_ylim(41, 46)
+    ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5)
+
+    ax2 = axes[1]
+    bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge)
+    ref_cosmology = pd.read_csv(f"./simulation_paras.csv")
+    ref_cosmology = ref_cosmology[ref_cosmology['name']==simulation_label]
+    para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
+    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
+    colors = ['blue', 'orange', 'green', 'red']
+    xoffsets = np.linspace(-0.02, 0.02, len(para_names))
+    for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
+        x = bins_cosmology['z'].data + x_off
+        ref_value = ref_cosmology[f'{para_name}'].values[0]
+        y_uperr = bins_cosmology[f'{para_name}_upper_errors']/ref_value
+        y_lowerr = bins_cosmology[f'{para_name}_lower_errors']/ref_value
+        diff = bins_cosmology[f'{para_name}_medians'] - ref_value
+        y = diff / ref_value
+        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=4, label=label, color=color)
+    ax2.axhline(y=0.0, color='black', linestyle=':', linewidth=1)
+    ax2.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
+    ax2.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
+    ax2.set_xlabel('$z$', fontsize=18)
+    ax2.set_ylabel('bias (error) / ref_value', fontsize=18)
+    ax2.legend(title=f'Simulation {simulation_label} Cosmological',fontsize=14, title_fontsize=16, markerscale=1)
+    plt.tight_layout()
+    if fname == '':
+        fname = f'./figures/test_simulation_detection_prob_cosmology_vs_z.pdf'
+    plt.savefig(fname)
     
 
 
