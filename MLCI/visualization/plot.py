@@ -356,9 +356,12 @@ def plot_detection_prob_and_cosmology_vs_Z():
     pass
 
 
-def obtain_binned_cosmology(model_name, z_bins_edge=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]):
-    model_name = 'RFtest1'
-    results = pd.read_csv(f"./results/{model_name}/observation.csv")
+def obtain_binned_cosmology(model_name, z_bins_edge=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8], simulation=False, simulation_label=None):
+    if simulation:
+        results = pd.read_csv(f"./results/{model_name}/mix_simulations.csv")
+        results = results[results['label'] == simulation_label]
+    else:
+        results = pd.read_csv(f"./results/{model_name}/observation.csv")
     z_0, z_1 = z_bins_edge[0], z_bins_edge[-1]
     results = results[(results['z'] >= z_0) & (results['z'] < z_1)]
     # plot the cosmological parameters vs redshift
@@ -492,7 +495,7 @@ def plot_simulation_detection_prob_and_cosmology_vs_z(simulation_label, model_na
     ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5)
 
     ax2 = axes[1]
-    bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge)
+    bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge, simulation=True, simulation_label=simulation_label)
     ref_cosmology = pd.read_csv(f"./simulation_paras.csv")
     ref_cosmology = ref_cosmology[ref_cosmology['name']==simulation_label]
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
