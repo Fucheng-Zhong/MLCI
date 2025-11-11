@@ -207,5 +207,5 @@ if __name__ == "__main__":
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
         test_num = extract_last_number(model_name)
-        if test_num >= 41:
-            test_configuration(model_name, config, training=True)
+        if test_num >= 24:
+            test_configuration(model_name, config, training=False)

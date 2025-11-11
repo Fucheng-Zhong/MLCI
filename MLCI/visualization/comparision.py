@@ -44,6 +44,7 @@ def read_samples(fanme, col_names, names, labels, is_catalog=False):
 #2 https://www.cosmos.esa.int/web/planck/pla
 
 
+
 # 当前目录 # Need to add the absolute location
 cwd = os.getcwd()
 chain_dir = os.path.join(cwd, 'survey/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3/')
@@ -65,6 +66,26 @@ def read_plank_data(names, labels):
             data_points.append(p.H0/100)
     samples = MCSamples(samples=data_points, weights=samples.weights, names=names, labels=labels, settings={'smooth_scale_2D':0.5})
     return samples
+
+# https://arxiv.org/pdf/2503.19442
+# Fig. 10
+def read_KiDS_Legacy(names, labels):
+    fname = os.path.join(cwd, 'survey/KiDS_Legacy_fiducial_COSEBIs_nautilus_B_massdep.txt')
+    data = pd.read_csv(fname, delim_whitespace=True)
+    weights = np.exp(data['log_weight'].values)
+    data_points = []
+    for name in names:
+        if name == 'omega_m':
+            data_points.append(data['OMEGA_M'].values)
+        elif name == 'sigma_8':
+            data_points.append(data['SIGMA_8'].values)
+        elif name == 'omega_b': # No this data
+            pass
+        elif name == 'h0':
+            data_points.append(data['h0'].values)
+    samples = MCSamples(samples=data_points, weights=weights, names=names, labels=labels, settings={'smooth_scale_2D':0.5})
+    return samples
+
 
 def lable_sim_points(sim_catalog, col_names, ax):
     cos_labels = sim_catalog['name'].values
@@ -152,8 +173,9 @@ def compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False, tru
     samples_RF = [read_samples(catalog, ['Omega', 'Sigm8', 'weight'], names,labels, is_catalog=True) for name, catalog in catalogs.items()]
     samples_RF_label = [name for name, catalog in catalogs.items()]
     samples_Plank = read_plank_data(names, labels)
-    samples_list = [samples_Plank, samples_DES_Y3, samples_kid1000, samples_kid1000_2x3pt] + samples_RF
-    samples_legends = ['Plank2018', 'DES Y3+KiDS-1000 ', 'KiDS-1000', 'KiDS-1000+2x3pt'] + samples_RF_label
+    samples_KiDS_Legacy = read_KiDS_Legacy(names, labels)
+    samples_list = [samples_Plank, samples_DES_Y3, samples_kid1000, samples_kid1000_2x3pt, samples_KiDS_Legacy] + samples_RF
+    samples_legends = ['Plank2018', 'DES Y3+KiDS-1000 ', 'KiDS-1000', 'KiDS-1000+2x3pt', 'KiDS-Legacy'] + samples_RF_label
     color_text = False
     ax = axs[0]
     lims=[0.1, 0.6, 0.5, 1.1]
@@ -236,8 +258,9 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     samples_RF = [read_samples(catalog, ['Omega', 'Sigm8', 'weight'], names,labels, is_catalog=True) for name, catalog in catalogs.items()]
     samples_RF_label = [name for name, catalog in catalogs.items()]
     samples_Plank = read_plank_data(names, labels)
-    samples_list = [samples_DES_Y3, samples_kid1000, samples_kid1000_2x3pt, samples_Plank, ]
-    samples_legends = ['DES Y3+KiDS-1000 ', 'KiDS-1000', 'KiDS-1000+2x3pt', 'Plank2018', ]
+    samples_KiDS_Legacy = read_KiDS_Legacy(names, labels)
+    samples_list = [samples_DES_Y3, samples_kid1000, samples_kid1000_2x3pt, samples_KiDS_Legacy, samples_Plank, ]
+    samples_legends = ['DES Y3+KiDS-1000 ', 'KiDS-1000', 'KiDS-1000+2x3pt', 'KiDS-Legacy', 'Plank2018', ]
     if add_contour:
         samples_list = samples_list + samples_RF
         samples_legends = samples_legends +  + samples_RF_label

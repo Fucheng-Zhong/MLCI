@@ -76,26 +76,21 @@ def observed_data():
     cosmo_bestfit_rho_z = cosmo_bestfit.critical_density(z).to(u.Msun/u.kpc**3)
     R500 = 3/(4*np.pi)*(eFEDS_cat2['Mgas500'].data*1e12*u.Msun/cosmo_bestfit_rho_z)**(1/3)
     table1['R'] = np.log10(R500.data)
-    table1['R'].unit = "Log10(R / kpc)"
     R500_lower = 3/(4*np.pi)*((eFEDS_cat2['Mgas500'].data-eFEDS_cat2['e_Mgas500'].data)*1e12*u.Msun/cosmo_bestfit_rho_z)**(1/3)
     table1['R_e'] =  table1['R'].data - np.log10(R500_lower.data)
     R500_upper = 3/(4*np.pi)*((eFEDS_cat2['Mgas500'].data+eFEDS_cat2['E_Mgas500'].data)*1e12*u.Msun/cosmo_bestfit_rho_z)**(1/3)
     table1['R_E'] =  np.log10(R500_upper.data) - table1['R'].data
     table1['Mgas'] = np.log10(eFEDS_cat2['Mgas500'].data*1e12)
-    table1['Mgas'].unit = "Log10(M / M_sun)"
     table1['Mgas_e'] = -np.log10(1 - eFEDS_cat2['e_Mgas500'].data/eFEDS_cat2['Mgas500'].data)
     table1['Mgas_E'] = np.log10(1+eFEDS_cat2['E_Mgas500'].data/eFEDS_cat2['Mgas500'].data)
     table1['L'] = np.log10(eFEDS_cat2['Lbol500'].data)+42 # 10**42 erg s-1
-    table1['L'].unit = "Log10(L / erg s-1)"
     table1['L_e'] = -np.log10(1-eFEDS_cat2['e_Lbol500'].data/eFEDS_cat2['Lbol500'].data)
     table1['L_E'] = np.log10(1+eFEDS_cat2['E_Lbol500'].data/eFEDS_cat2['Lbol500'].data)
     table1['T'] = np.log10(eFEDS_cat2['T500'].data)
     table1['T_e'] = table1['T'] - np.log10(eFEDS_cat2['T500'].data - eFEDS_cat2['e_T500'].data)
     table1['T_E'] = np.log10(eFEDS_cat2['T500'].data + eFEDS_cat2['E_T500'].data) - table1['T']
-    table1['T'].unit = "Log10(T / keV)"
     table1['z'] = z
     table1['VDIS'] = -1
-    table1['VDIS'].unit = "Log(VDIS / km/s)"
     table1['VDIS_e'] = table1['VDIS_E'] = -1
     table1['label'] = 'eFEDS'
     #=== DR1
@@ -104,21 +99,17 @@ def observed_data():
     table2['RA'] = erass1['RA']
     table2['DEC'] = erass1['DEC']
     table2['R'] = np.log10(erass1['R500'].data)
-    table2['R'].unit = "Log10(R/kpc)"
     table2['R_e'] = np.log10(erass1['R500'].data)-np.log10(erass1['R500_L'].data)
     table2['R_E'] = np.log10(erass1['R500_H'].data)-np.log10(erass1['R500'].data)
     table2['Mgas'] = np.log10(erass1['MGAS500'].data*1e11)
-    table2['Mgas'].unit = "Log10(M / M_sun)"
     table2['Mgas_e'] = np.log10(erass1['MGAS500'].data)-np.log10(erass1['MGAS500_L'].data)
     table2['Mgas_E'] = np.log10(erass1['MGAS500_H'].data)-np.log10(erass1['MGAS500'].data)
     table2['L'] = np.log10(erass1['Lbol500'].data)+42 # 10**42 erg s-1
-    table2['L'].unit = "Log10(L / erg s-1)"
     table2['L_e'] = np.log10(erass1['Lbol500'].data)-np.log10(erass1['Lbol500_L'].data)
     table2['L_E'] = np.log10(erass1['Lbol500_H'].data)-np.log10(erass1['Lbol500'].data)
     table2['T'] = np.log10(erass1['KT'].data)
     table2['T_e'] = table2['T'] - np.log10(erass1['KT_L'].data)
     table2['T_E'] = np.log10(erass1['KT_H'].data) - table2['T']
-    table2['T'].unit = "Log10(T / keV)"
     table2['z'] = erass1['BEST_Z']
     # see https://ui.adsabs.harvard.edu/abs/2024A%26A...688A.210K/abstract
     # see https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/688/A210#/browse
@@ -141,11 +132,15 @@ def observed_data():
     table['R_mass_e'] = table['R_e'].data
     table['R_mass_E'] = table['R_E'].data
 
+    table['R'].unit = "Log10(R/kpc)"
+    table['Mgas'].unit = "Log10(M/M_sun)"
+    table['L'].unit = "Log10(L/erg s-1)"
+    table['T'].unit = "Log10(T/keV)"
     table['z'].unit = "z"
+    table['VDIS'].unit = "Log(VDIS/km/s)"
     # best-fit values
     table['OmegaB'] = 0.29
     table['Hubble'] = Planck18.H0
-    table['z'].unit = "z"
     table['z_E'] = table['z_e'] = z_error
     return table
 
@@ -361,8 +356,3 @@ def L_lim_z(z):
     D_L = cosmo.luminosity_distance(z).to('cm').value  # 输出单位：cm
     L_lim = 4 * np.pi * D_L**2 * flux_limit
     return L_lim
-
-
-# get Luminosit limit at z~0
-def selection_funtion(observated_data):
-    pass
