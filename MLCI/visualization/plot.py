@@ -700,25 +700,30 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     f_size = 14
     fig, axs = plt.subplots(1, len(col_rangs.keys())+1, figsize=(4*len(col_rangs.keys()), 4), dpi=160)
     units = ["Log10(R/kpc)", "Log10(M/M_sun)", "Log10(L/erg s-1)", "Log10(T/keV)", "z"]
-    for var, ax, xrang in zip(vars, axs[1:], xrangs):
+    for var, ax, xrang, index in zip(vars, axs[1:], xrangs, range(len(vars))):
         bw = (xrang[1] - xrang[0])/20
         for label, data, color in zip(labels, dataset, colors):
-            label = label
-            sns.histplot(data[var], ax=ax, kde=False, label=label, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
-            ax.set_yscale('log')
+            if index == 4:
+                sns.histplot(data[var], ax=ax, kde=False, label=label, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
+                ax.set_ylabel('Density', fontsize=f_size)
+                ax.yaxis.set_label_position("right")
+                ax.legend(framealpha=0.1, fontsize=f_size, loc='upper right')
+            else:
+                sns.histplot(data[var], ax=ax, kde=False, label=None, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
+                ax.set_ylabel(None)
+        ax.set_yscale('log')
         x0, x1 = np.round(xrang[0],1), np.round(xrang[1],1)
-        ax.legend(title=f'Density of {var} \nRange: {x0} -- {x1}',  framealpha=0.1, fontsize=f_size)
-        ax.set_ylabel('')
-    for ax, unit in zip(axs, units):
+        #ax.set_title(f'{var} range: {x0} -- {x1}')
+        
+    for ax, unit in zip(axs[1:], units):
         ax.set_xlabel(unit)
-    axs[1].set_ylabel('Density', fontsize=f_size)
-
+    
     observed_data = preprocess.observed_data()
     simulation_results = pd.read_csv(f"./results/{model_name}/mix_simulations.csv")
     simulation_results = simulation_results[simulation_results['label']==simulation_label]
     dataset = [observed_data, simulation_results]
     dataset = [observed_data]
-    labels = ['eFEDS+DR1', f'{simulation_label}']
+    labels = ['eFEDS+eRASS1', f'{simulation_label}']
     colors = ['orange', 'blue']
     alphas = [1.0, 0.3]
     z_0, z_1 = 0.0, 1.0
@@ -743,5 +748,6 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     plt.yticks(fontsize=f_size)
     if fname == '':
         fname = f'./figures/{fname}_distr.pdf'
+    plt.subplots_adjust(wspace=0.00, hspace=0.00)
     plt.tight_layout()
     plt.savefig(fname, bbox_inches='tight', pad_inches=0.1)

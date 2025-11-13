@@ -30,10 +30,8 @@ def test_configuration(model_name, config, training):
     print(output_line)
     print(config)
     config['model_name'] = model_name
-    cols = {config['R_type']:[2.5, 3.5], 'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]}
-    #======
-    cols['z'] = config['z']
-    cols['L'] = config['L']
+    #cols = {'R_corr':[2.5, 3.5], 'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]}
+    cols = config['cols']
     #======
     print(f"model_name: {config['model_name']} \n", cols)
     vars_name = list(cols.keys())
@@ -207,5 +205,5 @@ if __name__ == "__main__":
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
         test_num = extract_last_number(model_name)
-        if test_num >= 24:
+        if test_num == 1:
             test_configuration(model_name, config, training=False)

@@ -1,9 +1,8 @@
 RFtest1:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: &id001
+  noise_level:
   - 0.3333333333333333
   - 0.05
   leaf_size: 10000.0
@@ -13,7 +12,7 @@ RFtest1:
   exclude_outlier: false
   description: Fiducial
   delta_prop: 1
-  simulations: &id004
+  simulations:
   - C3
   - C4
   - C5
@@ -28,18 +27,29 @@ RFtest1:
   - C14
   - C15
   boost_real: true
-  z: &id002
-  - 0.0
-  - 1.0
-  L: &id003
-  - 43
-  - 46
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest2:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -63,14 +73,29 @@ RFtest2:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest3:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -93,14 +118,29 @@ RFtest3:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest4:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -119,14 +159,29 @@ RFtest4:
   - C13
   - C14
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest5:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -145,14 +200,29 @@ RFtest5:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest6:
   mode: RF
-  R_type: R_corr
   agn_feedback: +delta
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -160,16 +230,44 @@ RFtest6:
   exclude_outlier: false
   description: feedback +delta
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest7:
   mode: RF
-  R_type: R_corr
   agn_feedback: -delta
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -177,16 +275,44 @@ RFtest7:
   exclude_outlier: false
   description: feedback -delta
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest8:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.1
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -194,16 +320,44 @@ RFtest8:
   exclude_outlier: false
   description: feedback +0.1
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest9:
   mode: RF
-  R_type: R_corr
   agn_feedback: -0.1
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -211,16 +365,44 @@ RFtest9:
   exclude_outlier: false
   description: feedback -0.1
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest10:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.2
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -228,16 +410,44 @@ RFtest10:
   exclude_outlier: false
   description: feedback +0.2
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest11:
   mode: RF
-  R_type: R_corr
   agn_feedback: -0.2
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -245,16 +455,44 @@ RFtest11:
   exclude_outlier: false
   description: feedback -0.2
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest12:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.3
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -262,16 +500,44 @@ RFtest12:
   exclude_outlier: false
   description: feedback +0.3
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest13:
   mode: RF
-  R_type: R_corr
   agn_feedback: -0.3
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -279,13 +545,39 @@ RFtest13:
   exclude_outlier: false
   description: feedback -0.3
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest14:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
   noise_level:
@@ -298,13 +590,39 @@ RFtest14:
   exclude_outlier: false
   description: noise level 0.1
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest15:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
   noise_level:
@@ -317,16 +635,44 @@ RFtest15:
   exclude_outlier: false
   description: noise level 0.01
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest16:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -351,14 +697,29 @@ RFtest16:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest17:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 1000.0
   max_num: 10000.0
   sample_num: 100
@@ -366,13 +727,39 @@ RFtest17:
   exclude_outlier: false
   description: leaf size 1000
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest18:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
   noise_level:
@@ -385,16 +772,44 @@ RFtest18:
   exclude_outlier: false
   description: noise 0.01+leaf 1000
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest19:
   mode: RF
-  R_type: R_corr
   agn_feedback: +delta
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -402,16 +817,44 @@ RFtest19:
   exclude_outlier: false
   description: feedback +2delta
   delta_prop: 2
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest20:
   mode: RF
-  R_type: R_corr
   agn_feedback: -delta
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -419,16 +862,44 @@ RFtest20:
   exclude_outlier: false
   description: feedback -2delta
   delta_prop: 2
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest21:
   mode: NB
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -436,16 +907,44 @@ RFtest21:
   exclude_outlier: false
   description: Fiducial
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest22:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -464,14 +963,29 @@ RFtest22:
   - C10
   - C11
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest23:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 4000.0
   sample_num: 100
@@ -495,14 +1009,29 @@ RFtest23:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest24:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -510,18 +1039,44 @@ RFtest24:
   exclude_outlier: false
   description: z<0.5
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.0
-  - 0.5
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.0
+    - 0.5
 RFtest25:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 4000.0
   sample_num: 100
@@ -545,16 +1100,29 @@ RFtest25:
   - C14
   - C15
   boost_real: true
-  z:
-  - 0.0
-  - 0.5
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.0
+    - 0.5
 RFtest26:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -574,14 +1142,29 @@ RFtest26:
   - C11
   - C12
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest27:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -589,18 +1172,44 @@ RFtest27:
   exclude_outlier: false
   description: 0.2<z<0.9
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.2
-  - 0.9
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.2
+    - 0.9
 RFtest28:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -608,18 +1217,44 @@ RFtest28:
   exclude_outlier: false
   description: 0.2<z<0.8
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.2
-  - 0.8
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.2
+    - 0.8
 RFtest29:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -627,18 +1262,44 @@ RFtest29:
   exclude_outlier: false
   description: 0.2<z<0.7
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.2
-  - 0.7
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.2
+    - 0.7
 RFtest30:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -646,18 +1307,44 @@ RFtest30:
   exclude_outlier: false
   description: 0.3<z<0.5
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.3
-  - 0.5
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.3
+    - 0.5
 RFtest31:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -676,14 +1363,29 @@ RFtest31:
   - C11
   - C12
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest32:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 4000.0
   sample_num: 100
@@ -706,14 +1408,29 @@ RFtest32:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest33:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -731,14 +1448,29 @@ RFtest33:
   - C10
   - C11
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest34:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -760,14 +1492,29 @@ RFtest34:
   - C14
   - C15
   boost_real: true
-  z: *id002
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest35:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -775,18 +1522,44 @@ RFtest35:
   exclude_outlier: false
   description: 0.1<z<0.35
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.1
-  - 0.35
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.1
+    - 0.35
 RFtest36:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -794,18 +1567,44 @@ RFtest36:
   exclude_outlier: false
   description: 0.35<z<0.80
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z:
-  - 0.35
-  - 0.8
-  L: *id003
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0.35
+    - 0.8
 RFtest37:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -813,18 +1612,44 @@ RFtest37:
   exclude_outlier: false
   description: Lx>43.5
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L:
-  - 43.5
-  - 46.0
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43.5
+    - 46.0
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest38:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -832,18 +1657,44 @@ RFtest38:
   exclude_outlier: false
   description: Lx=44.5-46.0
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L:
-  - 44.5
-  - 46.0
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 44.5
+    - 46.0
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest39:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -851,18 +1702,44 @@ RFtest39:
   exclude_outlier: false
   description: Lx=43.0-44.5
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L:
-  - 43.0
-  - 44.5
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43.0
+    - 44.5
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest40:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -870,18 +1747,44 @@ RFtest40:
   exclude_outlier: false
   description: Lx=44.0-46.0
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L:
-  - 44.0
-  - 46.0
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 44.0
+    - 46.0
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
 RFtest41:
   mode: RF
-  R_type: R_corr
   agn_feedback: 0.0
   proportional: true
-  noise_level: *id001
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
   leaf_size: 10000.0
   max_num: 10000.0
   sample_num: 100
@@ -889,9 +1792,76 @@ RFtest41:
   exclude_outlier: false
   description: Lx=43.0-44.0
   delta_prop: 1
-  simulations: *id004
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
   boost_real: true
-  z: *id002
-  L:
-  - 43.0
-  - 44.0
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43.0
+    - 44.0
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
+RFtest42:
+  mode: RF
+  agn_feedback: 0.0
+  proportional: true
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: No R
+  delta_prop: 1
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+  boost_real: true
+  cols:
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
