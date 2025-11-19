@@ -283,7 +283,9 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
-    ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.1, prop={'size': 8, 'weight': 'bold'})
+    ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.0, prop={'size': 8, 'weight': 'bold'})
+    ax.tick_params(axis='both', labelsize=12)
+    ax.tick_params(axis='both', labelsize=12)
 
     #==== Omega_m & h0
     names, labels = ['omega_m','h0'],['\Omega_m','h0']
@@ -312,7 +314,9 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
-    ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.1, prop={'size': 8, 'weight': 'bold'})
+    ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.0, prop={'size': 10, 'weight': 'bold'},)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.tick_params(axis='both', labelsize=12)
 
     #===== Omega_m & Omega_b
     names,labels = ['omega_m','omega_b'],['\Omega_m','\Omega_b']
@@ -340,8 +344,9 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
-    ax.legend(handles=handles, labels=legend_text, loc='upper left', framealpha=0.1, prop={'size': 8, 'weight': 'bold'})
-
+    ax.legend(handles=handles, labels=legend_text, loc='upper left', framealpha=0.0, prop={'size': 12, 'weight': 'bold'})
+    ax.tick_params(axis='both', labelsize=12)
+    ax.tick_params(axis='both', labelsize=12)
 
     fig.savefig(fname, bbox_inches='tight')
     print('##### finish!!!! #####')

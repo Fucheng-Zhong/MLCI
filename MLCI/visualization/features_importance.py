@@ -42,7 +42,7 @@ def get_permutation_importance(model_name, valid_data, column_rangs):
 
 def plot(fname, importance, show_one=True):
     plt.figure(figsize=(8, 5), dpi=160)
-    fsize = 12
+    fsize = 16
     bar_width = 0.4  
     x = np.arange(len(importance['Feature']))
     if show_one:
@@ -51,7 +51,9 @@ def plot(fname, importance, show_one=True):
         plt.bar(x-bar_width/2, importance['impurity_importance'], yerr=importance['impurity_importance_std'], width=bar_width, label='impurity importance', color='skyblue')
         plt.bar(x+bar_width/2, importance['permutation_importance'], yerr=importance['permutation_importance_std'],width=bar_width, label='permutation importance', color='orange')
     plt.xticks(x, importance['Feature'], fontsize=fsize)
-    plt.yticks(fontsize=fsize)            
+    plt.yticks(fontsize=fsize)
+    plt.tick_params(axis='both', labelsize=16)
+    plt.tick_params(axis='both', labelsize=16)      
     plt.xlabel("Feature", fontsize=fsize)
     plt.ylabel("Importance score", fontsize=fsize)
     plt.legend(fontsize=fsize)
