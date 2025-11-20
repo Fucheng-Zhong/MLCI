@@ -744,7 +744,7 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     xrangs = col_rangs.values()
     f_size = 14
     fig, axs = plt.subplots(1, len(col_rangs.keys())+1, figsize=(4*len(col_rangs.keys()), 4), dpi=160)
-    units = ["Log10(R/kpc)", "Log10(M/M_sun)", "Log10(L/erg s-1)", "Log10(T/keV)", "z"]
+    units = ["Log$_{10}(R_{500}/kpc$)", "Log$_{10}(M_{gas}/M_{sun})$", "Log$_{10}(L_{gas}/erg \ s^{-1}$)", "Log$_{10}(T_{gas}/keV)$", "$z$"]
     for var, ax, xrang, index in zip(vars, axs[1:], xrangs, range(len(vars))):
         bw = (xrang[1] - xrang[0])/20
         for label, data, color in zip(labels, dataset, colors):
@@ -762,6 +762,8 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
         
     for ax, unit in zip(axs[1:], units):
         ax.set_xlabel(unit, fontsize=18)
+        ax.tick_params(axis='both', which='major', labelsize=16)  
+        ax.tick_params(axis='both', which='minor', labelsize=16)
     
     observed_data = preprocess.observed_data()
     simulation_results = pd.read_csv(f"./results/{model_name}/mix_simulations.csv")
@@ -783,15 +785,15 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
         ax1.scatter(data['z'], data['L'], color=color, s=2, alpha=alpha, marker='+', label=label)
     data = dataset[0]
     sns.kdeplot(x=data['z'],y=data['L'], ax=ax1, levels=[0.16, 0.50, 0.84],  linewidths=0.6, linestyles='-', fill=False, colors='black')
-    ax1.set_ylabel('Log10(L / erg s-1)', fontsize=18)
+    ax1.set_ylabel('Log$_{10}(L_{gas} / erg \ s^{-1}$)', fontsize=18)
     ax1.set_xlabel('z', fontsize=18)
     ax1.set_xlim(z_0, z_1)
     ax1.set_ylim(41, 46)
     ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5)
-    plt.tick_params(axis='both', which='major', labelsize=16)  
-    plt.tick_params(axis='both', which='minor', labelsize=16)
-    plt.xticks(fontsize=18)
-    plt.yticks(fontsize=18)
+    ax1.tick_params(axis='both', which='major', labelsize=16)  
+    ax1.tick_params(axis='both', which='minor', labelsize=16)
+    #plt.xticks(fontsize=18)
+    #plt.yticks(fontsize=18)
     if fname == '':
         fname = f'./figures/{fname}_distr.pdf'
     plt.subplots_adjust(wspace=0.00, hspace=0.00)
