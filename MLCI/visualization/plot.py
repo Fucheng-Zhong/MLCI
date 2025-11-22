@@ -12,6 +12,7 @@ from astropy.cosmology import Planck18
 import pandas as pd
 from astropy.table import Table 
 from ..data_processing import preprocess
+import matplotlib.gridspec as gridspec
 
 sim_catalog = model_new.sim_catalog
 output_para_name = model_new.output_para_name
@@ -673,7 +674,7 @@ def plot_simulation_detection_prob_and_cosmology_vs_z(simulation_label, model_na
     
 
 
-def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8, L0=None, significant='results/sinificants.fits', chi2_range=None, chi2_opt='normal_chi2', ref_chi_name='ref'):
+def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./figures/paras_vs_test.pdf', z_0=0.1, z_1=0.8, L0=None, significant='results/sinificants.fits', chi2_range=None, chi2_opt='normal_chi2', max_chi_name='ref', fic_chi2_name='RFtest1'):
     cosmology_paras = []
     signif, dof = [], []
     significant = Table.read(significant)
@@ -690,18 +691,24 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         cosmology_paras.append(paras)
         signif.append(significant[significant['model_name']==model_name]['chi2'].data)
         dof.append(significant[significant['model_name']==model_name]['dof'].data - k)
+    #=== reference cosmology: Planck2018
     ref_cosmology = planck18_cosmology
+    Cepheids_h0 = {'Hubble_medians':0.7403, 'Hubble_lower_errors':0.0142, 'Hubble_upper_errors':0.0142}
+    SH0ES_h0 = {'Hubble_medians':0.7330, 'Hubble_lower_errors':0.0104, 'Hubble_upper_errors':0.0104}
+    #
     cosmology_paras = Table(cosmology_paras)
-    subset_significant = np.concatenate(signif)
-    subset_dof = np.concatenate(dof)
-    subset_significant = subset_significant/subset_dof
-    ref_chi2 = significant[significant['model_name']==ref_chi_name]['chi2'].data/significant[significant['model_name']==ref_chi_name]['dof'].data
-    ref_chi2 = ref_chi2[0]
-    fic_chi2 = subset_significant[0]
+    significants = np.concatenate(signif)
+    dofs = np.concatenate(dof)
+    significants = significants/dofs
+    max_chi2 = significant[significant['model_name']==max_chi_name]['chi2'].data/significant[significant['model_name']==max_chi_name]['dof'].data
+    max_chi2 = max_chi2[0]
+    fic_chi2 = significant[significant['model_name']==fic_chi2_name]['chi2'].data/significant[significant['model_name']==fic_chi2_name]['dof'].data
+    fic_chi2 = fic_chi2[0]
+    #fic_chi2 = significants[0]
     if chi2_opt == 'new_chi2':
-        subset_significant = (ref_chi2-subset_significant)/(ref_chi2-fic_chi2)
+        significants = (max_chi2-significants)/(max_chi2-fic_chi2)
     elif chi2_opt == 'normal_chi2':
-        subset_significant = subset_significant/fic_chi2
+        significants = significants/fic_chi2
     else:
         raise ValueError('chi2_opt should be new_chi2 or normal_chi2')
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
@@ -715,14 +722,27 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         ref_value = ref_cosmology[f'{para_name}_medians']
         ref_low_error = ref_cosmology[f'{para_name}_lower_errors']
         ref_up_error = ref_cosmology[f'{para_name}_upper_errors']
-        ax.errorbar(value, test_num, xerr=value_err, fmt='o', capsize=4)
+        ax.errorbar(value, test_num, xerr=value_err, fmt='o', capsize=4,)
         h0, err = ref_value, 0.003
-        ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value - ref_low_error, ref_value + ref_up_error, color='orange', alpha=0.4, label='Planck2018, 1$\sigma$')
+        ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value - ref_low_error, ref_value + ref_up_error, color='gray', alpha=0.6, label='Planck2018, 1$\sigma$')
+        if para_name == 'Hubble':
+            ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], Cepheids_h0['Hubble_medians'] - Cepheids_h0['Hubble_lower_errors'], Cepheids_h0['Hubble_medians'] + Cepheids_h0['Hubble_upper_errors'], 
+                             hatch='///', color='gray', edgecolor='black', alpha=0.6, label='Cepheids, 1$\sigma$')
+            ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], SH0ES_h0['Hubble_medians'] - SH0ES_h0['Hubble_lower_errors'], SH0ES_h0['Hubble_medians'] + SH0ES_h0['Hubble_upper_errors'], 
+                             hatch='\\\\\\', color='gray', edgecolor='black', alpha=0.6, label='SH0ES, 1$\sigma$')
         ax.set_xlabel(label)
+
+    for para_name, label, ax in zip(para_names, label_names, axes[0:4]):
+        test_num = np.arange(len(cosmology_paras))
+        value = cosmology_paras[f'{para_name}_medians']
+        value_err = np.array([cosmology_paras[f'{para_name}_lower_errors'], cosmology_paras[f'{para_name}_upper_errors']])
+        print(value_err.shape)
+        ax.errorbar(value[-1], test_num[-1], xerr=value_err[:, -1:], fmt='o', capsize=6, color="black")
+    
     
     axes[-1].axvline(x=0, color='r', linestyle='--', linewidth=2, label='best fits')
     axes[-1].axvline(x=1, color='r', linestyle='--', linewidth=2,)
-    axes[-1].barh(test_num, subset_significant, color="skyblue")
+    axes[-1].barh(test_num, significants, color='black', alpha=0.6) #color="skyblue"
     #axes[-1].set_xlabel(f'normalized $\chi^2$')
     axes[-1].set_xlabel(f'Significance')
     if chi2_range is not None:
@@ -731,7 +751,16 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
     
     if len(show_name) == 0:
         show_name = model_names
-    axes[0].legend(loc='best')
+    #axes[0].legend(loc='upper left', framealpha=0.1)
+    #axes[2].legend(loc='upper left', framealpha=0.1)
+    handles, labels = [], []
+    #for ax in axes.flat:
+    for ax in [axes[2]]:
+        h, l = ax.get_legend_handles_labels()
+        handles.extend(h)
+        labels.extend(l)
+    axes[1].legend(handles, labels, loc='upper left', framealpha=0.1)
+
     plt.yticks(ticks=np.arange(len(cosmology_paras)), labels=show_name)
     plt.tight_layout()
     plt.savefig(fname)
@@ -744,15 +773,17 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     xrangs = col_rangs.values()
     f_size = 14
     fig, axs = plt.subplots(1, len(col_rangs.keys())+1, figsize=(4*len(col_rangs.keys()), 4), dpi=160)
+
     units = ["Log$_{10}(R_{500}/kpc$)", "Log$_{10}(M_{gas}/M_{sun})$", "Log$_{10}(L_{gas}/erg \ s^{-1}$)", "Log$_{10}(T_{gas}/keV)$", "$z$"]
     for var, ax, xrang, index in zip(vars, axs[1:], xrangs, range(len(vars))):
         bw = (xrang[1] - xrang[0])/20
         for label, data, color in zip(labels, dataset, colors):
-            if index == 4:
+            if index == 2:
                 sns.histplot(data[var], ax=ax, kde=False, label=label, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
-                ax.set_ylabel('Density', fontsize=f_size)
-                ax.yaxis.set_label_position("right")
-                ax.legend(framealpha=0.1, fontsize=f_size, loc='upper right')
+                #ax.set_ylabel('Density', fontsize=f_size)
+                #ax.yaxis.set_label_position("right")
+                #ax.legend(framealpha=0.1, fontsize=f_size, loc='upper right')
+                ax.legend(framealpha=0.1, fontsize=f_size, loc=(0.50, 0.70))
             else:
                 sns.histplot(data[var], ax=ax, kde=False, label=None, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
                 ax.set_ylabel(None)
@@ -762,9 +793,17 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
         
     for ax, unit in zip(axs[1:], units):
         ax.set_xlabel(unit, fontsize=18)
+        ax.sharey(axs[1])
         ax.tick_params(axis='both', which='major', labelsize=16)  
         ax.tick_params(axis='both', which='minor', labelsize=16)
-    
+        ax.yaxis.set_label_position("right")
+        ax.yaxis.tick_right()
+    axs[-1].set_ylabel('Density', fontsize=f_size)
+    axs[-1].set_xlim(-0.15, 1.05)
+    for ax in axs[1:-1]:
+        ax.tick_params(labelleft=False)   # 去掉 y 轴标签
+        ax.tick_params(left=False)
+        
     observed_data = preprocess.observed_data()
     simulation_results = pd.read_csv(f"./results/{model_name}/mix_simulations.csv")
     simulation_results = simulation_results[simulation_results['label']==simulation_label]
@@ -773,7 +812,7 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     labels = ['eFEDS+eRASS1', f'{simulation_label}']
     colors = ['orange', 'blue']
     alphas = [1.0, 0.3]
-    z_0, z_1 = 0.0, 1.0
+    z_0, z_1 = 0.0, 1.25
     ax1 = axs[0]
     L_vals = np.logspace(41, 46.0, 100) 
     z_vals = np.linspace(0.01, 1.4, 100)
@@ -797,5 +836,10 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     if fname == '':
         fname = f'./figures/{fname}_distr.pdf'
     plt.subplots_adjust(wspace=0.00, hspace=0.00)
-    plt.tight_layout()
-    plt.savefig(fname, bbox_inches='tight', pad_inches=0.1)
+    #plt.tight_layout()
+    plt.savefig(fname, bbox_inches='tight', pad_inches=0.0)
+
+
+
+
+
