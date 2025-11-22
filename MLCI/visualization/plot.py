@@ -742,9 +742,9 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
     
     axes[-1].axvline(x=0, color='r', linestyle='--', linewidth=2, label='best fits')
     axes[-1].axvline(x=1, color='r', linestyle='--', linewidth=2,)
-    axes[-1].barh(test_num, significants, color='black', alpha=0.6) #color="skyblue"
+    axes[-1].barh(test_num, significants, color="steelblue", alpha=0.6) #
     #axes[-1].set_xlabel(f'normalized $\chi^2$')
-    axes[-1].set_xlabel(f'Significance')
+    axes[-1].set_xlabel(f'Relative Significance')
     if chi2_range is not None:
         axes[-1].set_xlim(chi2_range[0], chi2_range[1]) 
 
@@ -759,7 +759,9 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         h, l = ax.get_legend_handles_labels()
         handles.extend(h)
         labels.extend(l)
-    axes[1].legend(handles, labels, loc='upper left', framealpha=0.1)
+    axes[1].legend([handles[0]], [labels[0]], loc='upper left', framealpha=0.1)
+    axes[2].legend([handles[1]], [labels[1]], loc='upper left', framealpha=0.1)
+    axes[3].legend([handles[2]], [labels[2]], loc='upper left', framealpha=0.1)
 
     plt.yticks(ticks=np.arange(len(cosmology_paras)), labels=show_name)
     plt.tight_layout()
