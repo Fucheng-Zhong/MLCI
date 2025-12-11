@@ -120,7 +120,7 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
     output_labels = output_para_name
     fontsize = {"fontsize": 12}
     contour_args = {'colors': 'blue', 'linestyles': 'dashed', 'linewidths': 2}
-    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
+    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_b$']
     para_range = [(0.16, 0.48), (0.45, 1.05), (0.60, 0.80), (0.03, 0.06)]
     para_range = [(0.20, 0.45), (0.5, 1.0), (0.65, 0.75), (0.04, 0.05)]
     truth_kwargs = {'linewidth': 2, 'linestyle': '--'}
@@ -479,10 +479,10 @@ def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_ed
     ax1.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
     ax1.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
     ax1.set_ylim(-3, 3)
-    ax1.set_xlim(0.1, 1.0)
+    ax1.set_xlim(0.1, 0.9)
     ax1.set_ylabel('bias (error) / 1$\sigma$', fontsize=16)
     #ax1.set_title('Cosmological Parameters vs Redshift',fontsize=16)
-    ax1.legend(ncol=2, fontsize=12, title_fontsize=12,markerscale=1)
+    ax1.legend(ncol=1, fontsize=11, title_fontsize=12, markerscale=1, frameon=False)
 
     ax2 = axes[1]
     xoffsets = np.linspace(-0.02, 0.02, len(para_names))
@@ -523,10 +523,10 @@ def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_ed
     ax2.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
     ax2.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
     ax2.set_ylim(-3, 3)
-    ax2.set_xlim(0.1, 1.0)
+    ax2.set_xlim(0.1, 0.9)
     ax2.set_xlabel('$z$', fontsize=16)
     ax2.set_ylabel('bias (error) / 1$\sigma$', fontsize=16)
-    ax2.legend(ncol=2, fontsize=12, title_fontsize=12, markerscale=1)
+    ax2.legend(ncol=1, fontsize=11, title_fontsize=12, markerscale=1, frameon=False)
     ax1.tick_params(axis='both', labelsize=16)
     ax2.tick_params(axis='both', labelsize=16)
     #plt.tick_params(axis='both', which='major', labelsize=16)  
@@ -695,6 +695,8 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
     ref_cosmology = planck18_cosmology
     Cepheids_h0 = {'Hubble_medians':0.7403, 'Hubble_lower_errors':0.0142, 'Hubble_upper_errors':0.0142}
     SH0ES_h0 = {'Hubble_medians':0.7330, 'Hubble_lower_errors':0.0104, 'Hubble_upper_errors':0.0104}
+    TRGB_h0 =  {'Hubble_medians': 69.8/100, 'Hubble_lower_errors':(0.8**2+1.7**2)**0.5/100, 'Hubble_upper_errors':(0.8**2+1.7**2)**0.5/100} #https://ui.adsabs.harvard.edu/abs/2019ApJ...882...34F/abstract
+    GW_h0 = {'Hubble_medians': 68.0/100, 'Hubble_lower_errors':3.8/100, 'Hubble_upper_errors':4.4/100}#https://arxiv.org/abs/2404.16092
     #
     cosmology_paras = Table(cosmology_paras)
     significants = np.concatenate(signif)
@@ -723,23 +725,26 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         ref_low_error = ref_cosmology[f'{para_name}_lower_errors']
         ref_up_error = ref_cosmology[f'{para_name}_upper_errors']
         ax.errorbar(value, test_num, xerr=value_err, fmt='o', capsize=4,)
-        h0, err = ref_value, 0.003
-        ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value - ref_low_error, ref_value + ref_up_error, color='gray', alpha=0.6, label='Planck2018, 1$\sigma$')
+        ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], ref_value-ref_low_error, ref_value+ref_up_error, 
+                          color='gray', edgecolor='black', alpha=0.4, label='Planck2018, 1$\sigma$')
         if para_name == 'Hubble':
             ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], Cepheids_h0['Hubble_medians'] - Cepheids_h0['Hubble_lower_errors'], Cepheids_h0['Hubble_medians'] + Cepheids_h0['Hubble_upper_errors'], 
-                             hatch='///', color='gray', edgecolor='black', alpha=0.6, label='Cepheids, 1$\sigma$')
+                             hatch='///', color='green', edgecolor='black', alpha=0.4, label='Cepheids, 1$\sigma$')
             ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], SH0ES_h0['Hubble_medians'] - SH0ES_h0['Hubble_lower_errors'], SH0ES_h0['Hubble_medians'] + SH0ES_h0['Hubble_upper_errors'], 
-                             hatch='\\\\\\', color='gray', edgecolor='black', alpha=0.6, label='SH0ES, 1$\sigma$')
+                             hatch='\\\\\\', color='yellow', edgecolor='black', alpha=0.4, label='SH0ES, 1$\sigma$')
+            ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], TRGB_h0['Hubble_medians'] - TRGB_h0['Hubble_lower_errors'], TRGB_h0['Hubble_medians'] + TRGB_h0['Hubble_upper_errors'], 
+                             hatch='\\', color='red', edgecolor='black', alpha=0.4, label='TRGB, 1$\sigma$')
+            #ax.fill_betweenx([-0.1, len(cosmology_paras)-0.1], GW_h0['Hubble_medians'] - GW_h0['Hubble_lower_errors'], GW_h0['Hubble_medians'] + GW_h0['Hubble_upper_errors'], 
+            #                 hatch='/', color='gray', edgecolor='black', alpha=0.4, label='GW, 1$\sigma$')
         ax.set_xlabel(label)
 
     for para_name, label, ax in zip(para_names, label_names, axes[0:4]):
         test_num = np.arange(len(cosmology_paras))
         value = cosmology_paras[f'{para_name}_medians']
         value_err = np.array([cosmology_paras[f'{para_name}_lower_errors'], cosmology_paras[f'{para_name}_upper_errors']])
-        print(value_err.shape)
         ax.errorbar(value[-1], test_num[-1], xerr=value_err[:, -1:], fmt='o', capsize=6, color="black")
     
-    
+    print('test_num', test_num, 'significant:', len(significants))
     axes[-1].axvline(x=0, color='r', linestyle='--', linewidth=2, label='best fits')
     axes[-1].axvline(x=1, color='r', linestyle='--', linewidth=2,)
     axes[-1].barh(test_num, significants, color="steelblue", alpha=0.6) #
@@ -759,9 +764,11 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         h, l = ax.get_legend_handles_labels()
         handles.extend(h)
         labels.extend(l)
-    axes[1].legend([handles[0]], [labels[0]], loc='upper left', framealpha=0.1)
-    axes[2].legend([handles[1]], [labels[1]], loc='upper left', framealpha=0.1)
-    axes[3].legend([handles[2]], [labels[2]], loc='upper left', framealpha=0.1)
+    axes[0].legend([handles[0]], [labels[0]], loc='upper left', framealpha=0.1)
+    axes[1].legend([handles[1]], [labels[1]], loc='upper left', framealpha=0.1)
+    axes[2].legend([handles[2]], [labels[2]], loc='upper left', framealpha=0.1)
+    axes[3].legend([handles[3]], [labels[3]], loc='upper left', framealpha=0.1)
+    #axes[4].legend([handles[4]], [labels[4]], loc='upper left', framealpha=0.1)
 
     plt.yticks(ticks=np.arange(len(cosmology_paras)), labels=show_name)
     plt.tight_layout()
@@ -785,7 +792,7 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
                 #ax.set_ylabel('Density', fontsize=f_size)
                 #ax.yaxis.set_label_position("right")
                 #ax.legend(framealpha=0.1, fontsize=f_size, loc='upper right')
-                ax.legend(framealpha=0.1, fontsize=f_size, loc=(0.50, 0.70))
+                ax.legend(framealpha=0.1, fontsize=f_size, loc=(0.50, 0.70), frameon=False)
             else:
                 sns.histplot(data[var], ax=ax, kde=False, label=None, palette='dark', color=color, stat="density", alpha=0.4, binwidth=bw)
                 ax.set_ylabel(None)
@@ -830,7 +837,7 @@ def plot_distribution_selection_fun(dataset, model_name, simulation_label, label
     ax1.set_xlabel('z', fontsize=18)
     ax1.set_xlim(z_0, z_1)
     ax1.set_ylim(41, 46)
-    ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5)
+    ax1.legend(title='$S(L, z)$',fontsize=14, title_fontsize=16, markerscale=5, frameon=False)
     ax1.tick_params(axis='both', which='major', labelsize=16)  
     ax1.tick_params(axis='both', which='minor', labelsize=16)
     #plt.xticks(fontsize=18)

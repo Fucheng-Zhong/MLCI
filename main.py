@@ -9,6 +9,10 @@ from scipy.stats import gaussian_kde
 import yaml, os, time
 from datetime import datetime
 
+from MLCI.utils.config_creator import YamlCreator
+yaml_creter = YamlCreator(fname='default_test_para.yaml')
+yaml_creter.create_test_para_yaml()
+
 def exclude_out(xlabel, ylabel, data, percent=5):
     x = data[xlabel].data
     y = data[ylabel].data
@@ -130,7 +134,7 @@ def test_configuration(model_name, config, training):
     else:
         classifier.test_data = observed_data
     classifier.config['weight'] = True
-    classifier.config['p_threshold'] = 0.0
+    classifier.config['p_threshold'] = config['p_threshold']
     results = classifier.points(output_name=f"./results/{config['model_name']}/observation.csv", confusion_matrix=confusion_matrix)
     plot.plot_corner(results, ref_point='C8', test_set='observed_samples', fname=f"figures/{config['model_name']}/observation.pdf", show_cos_name=False)
     plot.plot_corner(results, ref_point='Planck2018', smooth=1.0, test_set='observed_samples', fname=f'figures/{config['model_name']}/observation_Planck2018.pdf', show_cos_name=False, show_pdf=False,show_datapoint=False)
@@ -205,5 +209,5 @@ if __name__ == "__main__":
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
         test_num = extract_last_number(model_name)
-        if test_num >= 25:
-            test_configuration(model_name, config, training=False)
+        if test_num == 46:
+            test_configuration(model_name, config, training=True)
