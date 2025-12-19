@@ -8,7 +8,7 @@ benchmark = {'mode':'RF', 'agn_feedback':0.0, 'proportional':True, 'noise_level'
             'simulations': [f'C{i+3}' for i in range(13)],
             'boost_real':True,
             'cols':{'R_corr':[2.5, 3.5], 'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]},
-            'p_threshold':0.0
+            'p_threshold':0.0, 'train_frac':0.9
             }
 
 test_set = {}
@@ -209,6 +209,15 @@ test_set['RFtest45'] = deepcopy(benchmark)
 test_set['RFtest45']['description'] = 'No R500'
 test_set['RFtest45']['cols']  = {'Mgas':[12.0, 14.0], 'L':[43, 46], 'T':[-0.2, 1], 'z':[0, 1.0]}
 test_set['RFtest45']['p_threshold'] = 0.05
+
+test_set['RFtest46'] = deepcopy(benchmark)
+test_set['RFtest46']['train_frac'] = 1000
+test_set['RFtest46']['description'] = '1000 sim'
+
+test_set['RFtest47'] = deepcopy(benchmark)
+test_set['RFtest47']['train_frac'] = 1000*100
+test_set['RFtest47']['description'] = '1000x100 sim'
+
 
 class YamlCreator:
     def __init__(self, fname='default_test_para.yaml'):

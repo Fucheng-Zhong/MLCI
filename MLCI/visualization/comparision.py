@@ -7,6 +7,7 @@ from astropy.table import Table
 import getdist.plots as gplot
 from getdist import plots, MCSamples
 import corner
+from matplotlib.ticker import FormatStrFormatter
 #sns.set_theme(style="ticks", palette="deep")
 #sns.set_theme(style="darkgrid", palette="bright")
 #sns.set_theme(style="ticks", palette="bright")
@@ -51,7 +52,8 @@ chain_dir = os.path.join(cwd, 'survey/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lo
 
 def read_plank_data(names, labels):
     g = gplot.getSinglePlotter(chain_dir=chain_dir)
-    samples = g.sample_analyser.samples_for_root('base_plikHM_TTTEEE_lowl_lowE')
+    #samples = g.sample_analyser.samples_for_root('base_plikHM_TTTEEE_lowl_lowE')
+    samples = g.sample_analyser.samples_for_root('base_plikHM_TTTEEE_lowl_lowE_lensing')
     p = samples.getParams()
     data_points = []
     # parameters names listed in file: base_plikHM_TTTEEE_lowl_lowE.paramnames
@@ -86,6 +88,52 @@ def read_KiDS_Legacy(names, labels):
     samples = MCSamples(samples=data_points, weights=weights, names=names, labels=labels, settings={'smooth_scale_2D':0.5})
     return samples
 
+import numpy as np
+import matplotlib.pyplot as plt
+from getdist import MCSamples, plots
+import os
+
+def read_desi_bao_bbn_acoustic(cosmo_params=['omega_m', 'h0'], paras_label=['\Omega_m','h_0']):
+    # 你的 chain 目录
+    chain_dir = r'd:\OneDrive\桌面\eROSTA\survey\desi-bao-all_schoneberg2024-bbn_planck2018-thetastar-fixed-marg-nnu'
+    # 参数名（从文件头部提取）
+    param_names = ['ombh2', 'omch2', 'theta_s_100', 'As', 'h0', 'omega_m', 
+                'omegamh2', 'omegal', 'zrei', 'YHe', 'Y_p', 'DHBBN', 
+                'A', 'clamp', 'age', 'rdrag', 'zdrag', 'H0rdrag',
+                'chi2__BAO', 'chi2__bbn', 'chi2__thetastar', 
+                'minuslogprior', 'minuslogprior__0', 'chi2',
+                'chi2__desi_bao', 'chi2__bbn_like', 'chi2__thetastar_like']
+    # 读取所有 chain
+    all_data = []
+    for i in range(1, 5):
+        data = np.loadtxt(os.path.join(chain_dir, f'chain.{i}.txt'))
+        all_data.append(data)
+        print(f"DESI Chain {i}: {data.shape[0]} 样本")
+
+    combined = np.vstack(all_data)
+    print(f"DESI 总样本数: {combined.shape[0]}")
+    # 更简单的方法：直接创建只包含这些参数的新样本对象
+    # 提取参数数据
+    param_indices = [param_names.index(p) for p in cosmo_params]
+    selected_data = combined[:, [2 + idx for idx in param_indices]]
+    
+    # 对于 'h' 参数，除以 100
+    for i, param in enumerate(cosmo_params):
+        if param == 'h0':
+            selected_data[:, i] = selected_data[:, i] / 100.0
+            print(f"已将 H0 转换为 h (H0/100)")
+    
+    # 创建样本对象
+    samples = MCSamples(
+        samples=selected_data,
+        weights=combined[:, 0],
+        loglikes=-combined[:, 1],
+        names=cosmo_params,
+        labels=paras_label
+    )
+    return samples
+
+
 
 def lable_sim_points(sim_catalog, col_names, ax):
     cos_labels = sim_catalog['name'].values
@@ -102,7 +150,7 @@ def add_surveys(survey_cat, col_names, ax):
         x, y = [float(xpoint[0])], [float(ypoint[0])]
         xerr = ([float(xpoint[2])], [float(xpoint[1])]) 
         yerr = ([float(ypoint[2])], [float(ypoint[1])])
-        survey_name = row['survey'].rsplit('-')[-1]
+        survey_name = row['survey'].split('-', 1)[-1]
         scater = ax.errorbar(x, y, xerr=xerr, yerr=yerr, fmt="", capsize=5, label=survey_name, lw=2.0)
     legends = ax.legend()
     return legends
@@ -122,7 +170,7 @@ def updata_legend(legends2, legends1, ax, loc='upper right'):
 
 
 import matplotlib.lines as mlines
-def add_corner(catalogs, label_names, ax, smooth, lims):
+def add_corner(catalogs, label_names, ax, smooth, lims, color="blue"):
     key = list(catalogs.keys())[0]
     samples, weights = np.array(catalogs[key][label_names]), catalogs[key]['weight']
     range = [(lims[0], lims[1]), (lims[2], lims[3])]
@@ -130,7 +178,7 @@ def add_corner(catalogs, label_names, ax, smooth, lims):
                     samples[:,0], samples[:,1],
                     weights=weights,
                     ax=ax,
-                    color="blue",
+                    color=color,
                     plot_contours=True,
                     no_fill_contours = True,
                     #fill_contours=False,
@@ -141,8 +189,32 @@ def add_corner(catalogs, label_names, ax, smooth, lims):
                     bins=95,
                     plot_datapoints=False,
                     contourf_kwargs={'alpha':0.01, 'colors':'skyblue'}, 
-                    contour_kwargs={'colors':'blue'},  
+                    contour_kwargs={'colors':color},  
                 )
+    
+def add_corner(catalogs, label_names, ax, smooth, lims, color="blue"):
+    key = list(catalogs.keys())[0]
+    samples, weights = np.array(catalogs[key][label_names]), catalogs[key]['weight']
+    range_vals = [(lims[0], lims[1]), (lims[2], lims[3])]
+    
+    corner.hist2d(
+        samples[:,0], samples[:,1],
+        weights=weights,
+        ax=ax,
+        color=color,
+        plot_contours=True,
+        no_fill_contours=True,  # 这个参数是关键！
+        fill_contours=False,     # 也设置这个为 False
+        alpha=1.0,               # 将 alpha 设为 1.0，因为不填充了
+        levels=(0.68, 0.95),
+        smooth=smooth,
+        range=range_vals,
+        bins=95,
+        plot_datapoints=False,
+        # 移除或注释掉 contourf_kwargs（这个是用于填充的）
+        # contourf_kwargs={'alpha':0.01, 'colors':'skyblue'},  
+        contour_kwargs={'colors': color, 'linewidths': 1.5},  # 只保留轮廓线
+    )
     
 
 def compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False, truncation=False):
@@ -265,11 +337,12 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
         samples_list = samples_list + samples_RF
         samples_legends = samples_legends +  + samples_RF_label
     color_text = False
-
+    RF_color = "black"
     fig, axs = plt.subplots(1,3, figsize=(18, 5), dpi=160)
     ax = axs[0]
     lims=[0.1, 0.6, 0.5, 1.1]
-    add_corner(catalogs,  ['Omega', 'Sigm8'], ax, smooth=3*RF_smooth, lims=lims)
+    
+    add_corner(catalogs,  ['Omega', 'Sigm8'], ax, smooth=3*RF_smooth, lims=lims, color=RF_color)
     g = plots.get_single_plotter()
     g.settings.alpha_filled_add = alpha_filled
     g.settings.linewidth_contour = linewidth_contour
@@ -280,7 +353,7 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     legends2 = add_surveys(extra_surveys, ['omegam', 'sigma8'], ax)
     handles, legend_text = updata_legend(legends1, legends2, ax)
     
-    blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
+    blue_line = mlines.Line2D([], [], color=RF_color, alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
     ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.0, prop={'size': 8, 'weight': 'bold'})
@@ -288,13 +361,14 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     ax.tick_params(axis='both', labelsize=12)
 
     #==== Omega_m & h0
-    names, labels = ['omega_m','h0'],['\Omega_m','h0']
+    names, labels = ['omega_m','h0'],['\Omega_m','h_0']
     samples_sim = read_samples('simulation_paras.csv', ['Omega', 'Hubble', 'None'], names, labels)
     samples_RF = [read_samples(catalog, ['Omega', 'Hubble', 'weight'], names,labels, is_catalog=True) for name, catalog in catalogs.items()]
     samples_RF_label = [name for name, catalog in catalogs.items()]
+    samples_desi = read_desi_bao_bbn_acoustic()
     samples_Plank = read_plank_data(names, labels)
-    samples_list = [samples_Plank]
-    samples_legends = ['Plank2018']
+    samples_list = [samples_desi, samples_Plank]
+    samples_legends = ['DESI DR1', 'Plank2018']
     if add_contour:
         samples_list = samples_list + samples_RF
         samples_legends = samples_legends +  + samples_RF_label
@@ -310,8 +384,8 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     lable_sim_points(sim_catalog, ['Omega', 'Hubble'], ax)
     legends2 = add_surveys(extra_surveys, ['omegam', 'h0'], ax)
     handles, legend_text = updata_legend(legends1, legends2, ax)
-    add_corner(catalogs,  ['Omega', 'Hubble'], ax, smooth=1.8, lims=lims)
-    blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
+    add_corner(catalogs,  ['Omega', 'Hubble'], ax, smooth=1.8, lims=lims, color=RF_color)
+    blue_line = mlines.Line2D([], [], color=RF_color, alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
     ax.legend(handles=handles, labels=legend_text, loc='upper right', framealpha=0.0, prop={'size': 10, 'weight': 'bold'},)
@@ -340,13 +414,13 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     lable_sim_points(sim_catalog, ['Omega', 'OmegaB'], ax)
     legends2 = add_surveys(extra_surveys, ['omegam', 'omegab'], ax)
     handles, legend_text = updata_legend(legends1, legends2, ax)
-    add_corner(catalogs,  ['Omega', 'OmegaB'], ax, smooth=2*RF_smooth, lims=lims)
-    blue_line = mlines.Line2D([], [], color='blue', alpha=1.0, label='this work')
+    add_corner(catalogs,  ['Omega', 'OmegaB'], ax, smooth=2*RF_smooth, lims=lims, color=RF_color)
+    blue_line = mlines.Line2D([], [], color=RF_color, alpha=1.0, label='this work')
     handles.append(blue_line)
     legend_text.append('this work')
     ax.legend(handles=handles, labels=legend_text, loc='upper left', framealpha=0.0, prop={'size': 12, 'weight': 'bold'})
     ax.tick_params(axis='both', labelsize=12)
     ax.tick_params(axis='both', labelsize=12)
-
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     fig.savefig(fname, bbox_inches='tight')
     print('##### finish!!!! #####')

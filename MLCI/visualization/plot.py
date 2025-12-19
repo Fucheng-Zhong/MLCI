@@ -13,6 +13,8 @@ import pandas as pd
 from astropy.table import Table 
 from ..data_processing import preprocess
 import matplotlib.gridspec as gridspec
+import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
 
 sim_catalog = model_new.sim_catalog
 output_para_name = model_new.output_para_name
@@ -167,11 +169,12 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
     corner.overplot_points(figure, sim_catalog[output_labels].values, color='blue', alpha=0.5, markersize=10,)
     if ref_point == 'None':
         show_text = f'Input: {test_set}\n Output: {", ".join(label_names)}\n Model name: {model_name}\n'
+        figure.axes[2].text(0.5, 0.5, show_text,fontsize=14,ha='center',va='center')
     elif ref_point == "Planck2018":
         show_text = f'Reference: {ref_point}\n Input:{test_set}'
     else:
         show_text = f'Reference: {ref_point}\n Input:{test_set}\n{ref_para.to_string(index=False)}\n{model_name}'
-    figure.axes[2].text(0.5, 0.5, show_text,fontsize=14,ha='center',va='center')
+        figure.axes[2].text(0.5, 0.5, show_text,fontsize=14,ha='center',va='center')
     # add simulation lables
     label_size = 12
     ax_indx = [(1,0), (2,0), (2,1), (3,0), (3,1), (3,2)]
@@ -203,7 +206,27 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
             y_min, y_max = axs[i,i].get_ylim()
             axs[i,i].fill_betweenx([y_min, y_max], xlower, xupper, color='red', alpha=0.2, label='Planck2018, 1$\sigma$')
 
-    
+    if ref_point == "Planck2018":
+        # 蓝色点：simulation catalog
+        blue_point = mlines.Line2D(
+            [], [], color='blue', marker='o', linestyle='None',
+            markersize=8, alpha=0.7, label='Simulations')
+        red_cross_err = figure.axes[0].errorbar(
+        [], [], xerr=[[0.1], [0.1]], yerr=[[0.1], [0.1]],
+        fmt='o', color='red', markersize=10,
+        capsize=3, elinewidth=1.5,
+        label='Planck 2018 ($1\sigma$)')
+        # 红色误差条 / 区间：Planck 2018
+        red_band = mpatches.Patch(facecolor='red', alpha=0.2, label=r'Planck 2018 ($1\sigma$)')
+        figure.legend(
+            title='Input catalog: eFEDS + eRASS1',
+            handles=[blue_point, red_cross_err, red_band],
+            loc='upper right',
+            bbox_to_anchor=(0.95, 0.95),
+            frameon=False,
+            fontsize=14,
+            title_fontsize=16
+        )
     if show_pdf:
         # add the probabilities pannel
         yshift = 0.2
@@ -226,13 +249,16 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
     plt.close()
 
 
-def get_expectation_1sigam(results, model_name, catalog_name, selection_fun = True):
+def get_expectation_1sigam(results, model_name, catalog_name, selection_fun = True, sigma1=True):
     if selection_fun:
         samples, weights = results[output_para_name], results['weight']
     else:
         samples = results[output_para_name]
         weights = results['weight']*results['detect_prob']
-    quantiles = [0.16, 0.50, 0.84]
+    if sigma1:
+        quantiles = [0.16, 0.50, 0.84]
+    else:
+        quantiles = [0.025, 0.5, 0.975]
     final_res = {'Model Name':model_name, 'Catalog':catalog_name}
     for i in range(len(output_para_name)):
         values = corner.quantile(samples.values[:, i], quantiles, weights=weights)
@@ -764,10 +790,10 @@ def plot_cosmology_paras_vs_test(model_names, show_name=[], keff=[], fname='./fi
         h, l = ax.get_legend_handles_labels()
         handles.extend(h)
         labels.extend(l)
-    axes[0].legend([handles[0]], [labels[0]], loc='upper left', framealpha=0.1)
-    axes[1].legend([handles[1]], [labels[1]], loc='upper left', framealpha=0.1)
-    axes[2].legend([handles[2]], [labels[2]], loc='upper left', framealpha=0.1)
-    axes[3].legend([handles[3]], [labels[3]], loc='upper left', framealpha=0.1)
+    axes[0].legend([handles[0]], [labels[0]], loc='upper center', bbox_to_anchor=(0.5, 1.05), framealpha=0.1, frameon=False)
+    axes[1].legend([handles[1]], [labels[1]], loc='upper center', bbox_to_anchor=(0.5, 1.05), framealpha=0.1, frameon=False)
+    axes[2].legend([handles[2]], [labels[2]], loc='upper center', bbox_to_anchor=(0.5, 1.05), framealpha=0.1, frameon=False)
+    axes[3].legend([handles[3]], [labels[3]], loc='upper center', bbox_to_anchor=(0.5, 1.05), framealpha=0.1, frameon=False)
     #axes[4].legend([handles[4]], [labels[4]], loc='upper left', framealpha=0.1)
 
     plt.yticks(ticks=np.arange(len(cosmology_paras)), labels=show_name)

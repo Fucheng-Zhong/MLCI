@@ -44,6 +44,7 @@ RFtest1:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest2:
   mode: RF
   agn_feedback: 0.0
@@ -91,6 +92,7 @@ RFtest2:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest3:
   mode: RF
   agn_feedback: 0.0
@@ -137,6 +139,7 @@ RFtest3:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest4:
   mode: RF
   agn_feedback: 0.0
@@ -179,6 +182,7 @@ RFtest4:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest5:
   mode: RF
   agn_feedback: 0.0
@@ -221,6 +225,7 @@ RFtest5:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest6:
   mode: RF
   agn_feedback: +delta
@@ -267,6 +272,7 @@ RFtest6:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest7:
   mode: RF
   agn_feedback: -delta
@@ -313,6 +319,7 @@ RFtest7:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest8:
   mode: RF
   agn_feedback: 0.1
@@ -359,6 +366,7 @@ RFtest8:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest9:
   mode: RF
   agn_feedback: -0.1
@@ -405,6 +413,7 @@ RFtest9:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest10:
   mode: RF
   agn_feedback: 0.2
@@ -451,6 +460,7 @@ RFtest10:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest11:
   mode: RF
   agn_feedback: -0.2
@@ -497,6 +507,7 @@ RFtest11:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest12:
   mode: RF
   agn_feedback: 0.3
@@ -543,6 +554,7 @@ RFtest12:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest13:
   mode: RF
   agn_feedback: -0.3
@@ -589,6 +601,7 @@ RFtest13:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest14:
   mode: RF
   agn_feedback: 0.0
@@ -635,6 +648,7 @@ RFtest14:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest15:
   mode: RF
   agn_feedback: 0.0
@@ -681,6 +695,7 @@ RFtest15:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest16:
   mode: RF
   agn_feedback: 0.0
@@ -729,6 +744,7 @@ RFtest16:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest17:
   mode: RF
   agn_feedback: 0.0
@@ -775,6 +791,7 @@ RFtest17:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest18:
   mode: RF
   agn_feedback: 0.0
@@ -821,6 +838,7 @@ RFtest18:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest19:
   mode: RF
   agn_feedback: +delta
@@ -867,6 +885,7 @@ RFtest19:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest20:
   mode: RF
   agn_feedback: -delta
@@ -913,6 +932,7 @@ RFtest20:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest21:
   mode: NB
   agn_feedback: 0.0
@@ -959,6 +979,7 @@ RFtest21:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest22:
   mode: RF
   agn_feedback: 0.0
@@ -1001,6 +1022,7 @@ RFtest22:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest23:
   mode: RF
   agn_feedback: 0.0
@@ -1048,6 +1070,7 @@ RFtest23:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest24:
   mode: RF
   agn_feedback: 0.0
@@ -1094,6 +1117,7 @@ RFtest24:
     - 0.0
     - 0.5
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest25:
   mode: RF
   agn_feedback: 0.0
@@ -1141,6 +1165,7 @@ RFtest25:
     - 0.0
     - 0.5
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest26:
   mode: RF
   agn_feedback: 0.0
@@ -1184,6 +1209,7 @@ RFtest26:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest27:
   mode: RF
   agn_feedback: 0.0
@@ -1230,6 +1256,7 @@ RFtest27:
     - 0.2
     - 0.9
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest28:
   mode: RF
   agn_feedback: 0.0
@@ -1276,6 +1303,7 @@ RFtest28:
     - 0.2
     - 0.8
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest29:
   mode: RF
   agn_feedback: 0.0
@@ -1322,6 +1350,7 @@ RFtest29:
     - 0.2
     - 0.7
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest30:
   mode: RF
   agn_feedback: 0.0
@@ -1368,6 +1397,7 @@ RFtest30:
     - 0.3
     - 0.5
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest31:
   mode: RF
   agn_feedback: 0.0
@@ -1410,6 +1440,7 @@ RFtest31:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest32:
   mode: RF
   agn_feedback: 0.0
@@ -1456,6 +1487,7 @@ RFtest32:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest33:
   mode: RF
   agn_feedback: 0.0
@@ -1497,6 +1529,7 @@ RFtest33:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest34:
   mode: RF
   agn_feedback: 0.0
@@ -1542,6 +1575,7 @@ RFtest34:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest35:
   mode: RF
   agn_feedback: 0.0
@@ -1588,6 +1622,7 @@ RFtest35:
     - 0.1
     - 0.35
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest36:
   mode: RF
   agn_feedback: 0.0
@@ -1634,6 +1669,7 @@ RFtest36:
     - 0.35
     - 0.8
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest37:
   mode: RF
   agn_feedback: 0.0
@@ -1680,6 +1716,7 @@ RFtest37:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest38:
   mode: RF
   agn_feedback: 0.0
@@ -1726,6 +1763,7 @@ RFtest38:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest39:
   mode: RF
   agn_feedback: 0.0
@@ -1772,6 +1810,7 @@ RFtest39:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest40:
   mode: RF
   agn_feedback: 0.0
@@ -1818,6 +1857,7 @@ RFtest40:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest41:
   mode: RF
   agn_feedback: 0.0
@@ -1864,6 +1904,7 @@ RFtest41:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest42:
   mode: RF
   agn_feedback: 0.0
@@ -1907,6 +1948,7 @@ RFtest42:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest43:
   mode: RF
   agn_feedback: 0.0
@@ -1946,6 +1988,7 @@ RFtest43:
     - 0
     - 1.0
   p_threshold: 0.0
+  train_frac: 0.9
 RFtest44:
   mode: RF
   agn_feedback: 0.0
@@ -1992,6 +2035,7 @@ RFtest44:
     - 0
     - 1.0
   p_threshold: 0.04
+  train_frac: 0.9
 RFtest45:
   mode: RF
   agn_feedback: 0.0
@@ -2035,3 +2079,98 @@ RFtest45:
     - 0
     - 1.0
   p_threshold: 0.05
+  train_frac: 0.9
+RFtest46:
+  mode: RF
+  agn_feedback: 0.0
+  proportional: true
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 1000 sim
+  delta_prop: 1
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+  boost_real: true
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
+  p_threshold: 0.0
+  train_frac: 1000
+RFtest47:
+  mode: RF
+  agn_feedback: 0.0
+  proportional: true
+  noise_level:
+  - 0.3333333333333333
+  - 0.05
+  leaf_size: 10000.0
+  max_num: 10000.0
+  sample_num: 100
+  max_depth: 10
+  exclude_outlier: false
+  description: 1000x100 sim
+  delta_prop: 1
+  simulations:
+  - C3
+  - C4
+  - C5
+  - C6
+  - C7
+  - C8
+  - C9
+  - C10
+  - C11
+  - C12
+  - C13
+  - C14
+  - C15
+  boost_real: true
+  cols:
+    R_corr:
+    - 2.5
+    - 3.5
+    Mgas:
+    - 12.0
+    - 14.0
+    L:
+    - 43
+    - 46
+    T:
+    - -0.2
+    - 1
+    z:
+    - 0
+    - 1.0
+  p_threshold: 0.0
+  train_frac: 100000

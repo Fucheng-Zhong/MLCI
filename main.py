@@ -71,6 +71,9 @@ def test_configuration(model_name, config, training):
     observed_data = preprocess.observed_data()
     observed_data = preprocess.filtering(observed_data, cols)
     simulated_data= preprocess.filtering(simulated_data, cols)
+    eFEDS = observed_data[observed_data['label'] == 'eFEDS']
+    eRASS1 = observed_data[observed_data['label'] == 'eRASS1']
+    print(f'eFEDS num = {len(eFEDS)}, eRASS1 num = {len(eRASS1)}')
     # === exclude outlier
     if config['exclude_outlier']:
         xlabel, ylabel = 'T', 'R_corr'
@@ -114,7 +117,7 @@ def test_configuration(model_name, config, training):
     elif config['mode'] == 'NB':
         classifier = model.Naive_Bayesian()
     simulated_boost_sample = model.pre_selection(simulated_boost_sample)
-    train_data, valid_data = model.data_split(simulated_boost_sample)
+    train_data, valid_data = model.data_split(simulated_boost_sample, frac=config['train_frac'])
     classifier.train_data = train_data
     classifier.config['input_column_rangs'] = cols
     classifier.config['model_name'] = model_name
@@ -209,5 +212,5 @@ if __name__ == "__main__":
     for model_name, config in test_set.items():
         print('Ready testing:', model_name, config)
         test_num = extract_last_number(model_name)
-        if test_num == 46:
-            test_configuration(model_name, config, training=True)
+        if test_num == 1:
+            test_configuration(model_name, config, training=False)
