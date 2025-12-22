@@ -249,9 +249,17 @@ def plot_corner(results, ref_point, test_set, fname=f'./figures/test_corner.pdf'
     plt.close()
 
 
-def get_expectation_1sigam(results, model_name, catalog_name, selection_fun = True, sigma1=True):
+def get_expectation_1sigam(results, model_name, catalog_name, selection_fun=True, sigma1=True, vmax_sel=False):
     if selection_fun:
-        samples, weights = results[output_para_name], results['weight']
+        if vmax_sel:
+            prob_max, porb_min = 1.0, 0.0
+            thr = 0.90
+            samples = results[output_para_name]
+            vmax_detect_prob = np.where(results['detect_prob']>=thr, prob_max, porb_min)
+            original_weights = results['weight']*results['detect_prob']
+            weights = original_weights*vmax_detect_prob
+        else:
+            samples, weights = results[output_para_name], results['weight']
     else:
         samples = results[output_para_name]
         weights = results['weight']*results['detect_prob']
@@ -445,12 +453,14 @@ def plot_cosmology_paras_vs_z(model_name, z_bins_edge, fname='./figures/test_Cos
 
 
 
-def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_edge, fname='./figures/test_Cosmological_Parameters_vs_z_simulation.pdf'):
+def plot_cosmology_paras_vs_z_simulation(model_name, z_bins_edge, fname='./figures/test_Cosmological_Parameters_vs_z_simulation.pdf'):
     bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge)
     para_names = ['Omega', 'Sigm8', 'Hubble', 'OmegaB']
-    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_B$']
+    label_names = ['$\Omega_m$', '$\sigma_8$', '$h_0$', '$\Omega_b$']
     colors = ['blue', 'orange', 'green', 'red']
 
+    model_name0 = 'RFtest1'
+    results0 = pd.read_csv(f"./results/{model_name0}/observation.csv")
     model_name1 = 'RFtest39'# 'RFtest41'
     results1 = pd.read_csv(f"./results/{model_name1}/observation.csv")
     model_name2 = 'RFtest38' #'RFtest40' 
@@ -462,53 +472,67 @@ def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_ed
     results_ref = results_ref[(results_ref['z'] >= z_0) & (results_ref['z'] < z_1)]
     ref_cosmology = get_expectation_1sigam(results_ref, model_name='RFtest1', catalog_name='RFtest1')
     # plot the cosmological parameters vs redshift
-    bins_cosmology1, bins_cosmology2 = [], []
+    bins_cosmology_faint, bins_cosmology_bright = [], []
+    bins_cosmology_vmax = []
     for i in range(len(redshift_bin)-1):
+        subset0 = results0[(results0['z'] >= redshift_bin[i]) & (results0['z'] < redshift_bin[i+1])]
         subset1 = results1[(results1['z'] >= redshift_bin[i]) & (results1['z'] < redshift_bin[i+1])]
         subset2 = results2[(results2['z'] >= redshift_bin[i]) & (results2['z'] < redshift_bin[i+1])]
         if len(subset1) <= 0:
             continue
-        cosmology_para1 = get_expectation_1sigam(subset1, model_name1, model_name1, selection_fun=False)
-        cosmology_para1['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
-        bins_cosmology1.append(cosmology_para1)
-        cosmology_para2 = get_expectation_1sigam(subset2, model_name2, model_name2, selection_fun=False)   
-        cosmology_para2['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
-        bins_cosmology2.append(cosmology_para2) 
-    ref_cosmology['z'] = [redshift_bin[0],redshift_bin[-1]]
-    bins_cosmology1 = Table(bins_cosmology1)
-    bins_cosmology2 = Table(bins_cosmology2)
+        cosmology_faint = get_expectation_1sigam(subset1, model_name1, model_name1, selection_fun=False)
+        cosmology_faint['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
+        bins_cosmology_faint.append(cosmology_faint)
+        cosmology_bright = get_expectation_1sigam(subset2, model_name2, model_name2, selection_fun=False)   
+        cosmology_bright['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
+        bins_cosmology_bright.append(cosmology_bright)
+        cosmology_vmax = get_expectation_1sigam(subset0, model_name0, model_name0, vmax_sel=True)
+        cosmology_vmax['z'] = (redshift_bin[i] + redshift_bin[i+1])/2
+        bins_cosmology_vmax.append(cosmology_vmax)
 
+    ref_cosmology['z'] = [redshift_bin[0],redshift_bin[-1]]
+    bins_cosmology_faint = Table(bins_cosmology_faint)
+    bins_cosmology_bright = Table(bins_cosmology_bright)
+    bins_cosmology_vmax = Table(bins_cosmology_vmax)
     
     fig, axes = plt.subplots(2, 1, figsize=(8,6), sharex=True)
     ax1 = axes[0]
     xoffsets = np.linspace(-0.02, 0.02, len(para_names)) 
     for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
-        x = bins_cosmology1['z'].data + x_off
-        y_uperr = bins_cosmology1[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
-        y_lowerr = bins_cosmology1[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
-        diff = bins_cosmology1[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
+        x = bins_cosmology_faint['z'].data + x_off
+        y_uperr = bins_cosmology_faint[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
+        y_lowerr = bins_cosmology_faint[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
+        diff = bins_cosmology_faint[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
         norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
         y = diff/norm_err
-        x_fit = np.linspace(min(bins_cosmology1['z'].data)-0.02, max(bins_cosmology1['z'].data)+0.02, 100)
-        ax1.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=4, label='Lx<44.5 '+label, color=color)
+        ax1.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=2, label='$L_x<44.5$', color=color)
     
     for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
-        x = bins_cosmology2['z'].data + x_off + 0.007
-        y_uperr = bins_cosmology2[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
-        y_lowerr = bins_cosmology2[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
-        diff = bins_cosmology2[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
+        x = bins_cosmology_bright['z'].data + x_off + 0.005
+        y_uperr = bins_cosmology_bright[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
+        y_lowerr = bins_cosmology_bright[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
+        diff = bins_cosmology_bright[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
         norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
         y = diff / norm_err
-        ax1.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='x', capsize=4, label='Lx>44.5 '+label, color=color)
+        ax1.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='s', capsize=2, label='$L_x>44.5$', color=color)
+
+    for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
+        x = bins_cosmology_vmax['z'].data + x_off + 0.010
+        y_uperr = bins_cosmology_vmax[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
+        y_lowerr = bins_cosmology_vmax[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
+        diff = bins_cosmology_vmax[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
+        norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
+        y = diff / norm_err
+        ax1.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='D', capsize=2, label='$V_{max}$', color=color)
 
     ax1.axhline(y=0.0, color='black', linestyle=':', linewidth=1)
     ax1.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
     ax1.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
-    ax1.set_ylim(-3, 3)
-    ax1.set_xlim(0.1, 0.9)
+    ax1.set_ylim(-3, 3.8)
+    ax1.set_xlim(0.1, 0.8)
     ax1.set_ylabel('bias (error) / 1$\sigma$', fontsize=16)
     #ax1.set_title('Cosmological Parameters vs Redshift',fontsize=16)
-    ax1.legend(ncol=1, fontsize=11, title_fontsize=12, markerscale=1, frameon=False)
+    ax1.legend(ncol=3, fontsize=9, markerscale=1, frameon=False)
 
     ax2 = axes[1]
     xoffsets = np.linspace(-0.02, 0.02, len(para_names))
@@ -519,17 +543,17 @@ def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_ed
         diff = bins_cosmology[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
         norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
         y = diff / norm_err
-        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=4, label=label, color=color)
+        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='o', capsize=2, label=label, color=color)
 
     bins_cosmology, aveg_cosmology = obtain_binned_cosmology(model_name, z_bins_edge, selection_fun=False)
     for para_name, label, x_off, color in zip(para_names, label_names, xoffsets, colors):
-        x = bins_cosmology['z'].data + x_off + 0.007
+        x = bins_cosmology['z'].data + x_off + 0.005
         y_uperr = bins_cosmology[f'{para_name}_upper_errors']/aveg_cosmology[f'{para_name}_upper_errors']
         y_lowerr = bins_cosmology[f'{para_name}_lower_errors']/aveg_cosmology[f'{para_name}_lower_errors']
         diff = bins_cosmology[f'{para_name}_medians'] - aveg_cosmology[f'{para_name}_medians']
         norm_err = np.where(diff > 0, aveg_cosmology[f'{para_name}_upper_errors'], aveg_cosmology[f'{para_name}_lower_errors'])
         y = diff / norm_err
-        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='x', capsize=4, label='No sel '+label, color=color, elinewidth=0.5, alpha=0.7)
+        ax2.errorbar(x, y, yerr=[y_lowerr, y_uperr], fmt='x', capsize=2, label='$No\_sel$', color=color, elinewidth=0.5, alpha=0.7)
 
     '''
     ref_cosmology = pd.read_csv(f"./simulation_paras.csv")
@@ -548,11 +572,11 @@ def plot_cosmology_paras_vs_z_simulation(model_name, simulation_label, z_bins_ed
     ax2.axhline(y=0.0, color='black', linestyle=':', linewidth=1)
     ax2.axhline(y=-1.0, color='black', linestyle=':', linewidth=1)
     ax2.axhline(y=1.0, color='black', linestyle=':', linewidth=1)
-    ax2.set_ylim(-3, 3)
-    ax2.set_xlim(0.1, 0.9)
+    ax2.set_ylim(-3, 3.8)
+    ax2.set_xlim(0.1, 0.8)
     ax2.set_xlabel('$z$', fontsize=16)
     ax2.set_ylabel('bias (error) / 1$\sigma$', fontsize=16)
-    ax2.legend(ncol=1, fontsize=11, title_fontsize=12, markerscale=1, frameon=False)
+    ax2.legend(ncol=2, fontsize=9, markerscale=1, frameon=False)
     ax1.tick_params(axis='both', labelsize=16)
     ax2.tick_params(axis='both', labelsize=16)
     #plt.tick_params(axis='both', which='major', labelsize=16)  

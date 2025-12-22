@@ -192,30 +192,6 @@ def add_corner(catalogs, label_names, ax, smooth, lims, color="blue"):
                     contour_kwargs={'colors':color},  
                 )
     
-def add_corner(catalogs, label_names, ax, smooth, lims, color="blue"):
-    key = list(catalogs.keys())[0]
-    samples, weights = np.array(catalogs[key][label_names]), catalogs[key]['weight']
-    range_vals = [(lims[0], lims[1]), (lims[2], lims[3])]
-    
-    corner.hist2d(
-        samples[:,0], samples[:,1],
-        weights=weights,
-        ax=ax,
-        color=color,
-        plot_contours=True,
-        no_fill_contours=True,  # 这个参数是关键！
-        fill_contours=False,     # 也设置这个为 False
-        alpha=1.0,               # 将 alpha 设为 1.0，因为不填充了
-        levels=(0.68, 0.95),
-        smooth=smooth,
-        range=range_vals,
-        bins=95,
-        plot_datapoints=False,
-        # 移除或注释掉 contourf_kwargs（这个是用于填充的）
-        # contourf_kwargs={'alpha':0.01, 'colors':'skyblue'},  
-        contour_kwargs={'colors': color, 'linewidths': 1.5},  # 只保留轮廓线
-    )
-    
 
 def compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False, truncation=False):
     fig, axs = plt.subplots(1, 3, figsize=(18, 5), dpi=160)
@@ -331,8 +307,9 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     samples_RF_label = [name for name, catalog in catalogs.items()]
     samples_Plank = read_plank_data(names, labels)
     samples_KiDS_Legacy = read_KiDS_Legacy(names, labels)
-    samples_list = [samples_DES_Y3, samples_kid1000, samples_kid1000_2x3pt, samples_KiDS_Legacy, samples_Plank, ]
-    samples_legends = ['DES Y3+KiDS-1000 ', 'KiDS-1000', 'KiDS-1000+2x3pt', 'KiDS-Legacy', 'Plank2018', ]
+    samples_list = [samples_kid1000, samples_DES_Y3, samples_KiDS_Legacy, samples_kid1000_2x3pt, samples_Plank, ]
+    samples_legends = ['KiDS-1000', 'DES Y3+KiDS-1000 ', 'KiDS-Legacy', 'KiDS-1000+2x3pt', 'Plank2018']
+    color_list = ['#CC78BC', '#029E73', '#D55E00',"#949494", '#0173B2']
     if add_contour:
         samples_list = samples_list + samples_RF
         samples_legends = samples_legends +  + samples_RF_label
@@ -346,7 +323,7 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     g = plots.get_single_plotter()
     g.settings.alpha_filled_add = alpha_filled
     g.settings.linewidth_contour = linewidth_contour
-    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims, contour_levels=[0.68,0.95])
+    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims, contour_levels=[0.68,0.95], colors=color_list,  contour_colors=color_list)
     legends1 = g.add_legend(samples_legends, ax=ax, colored_text=color_text, legend_loc='upper right')
     g.plot_2d_scatter(samples_sim, names[0], names[1], ax=ax, color='blue', scatter_size=30, lims=lims)
     lable_sim_points(sim_catalog, ['Omega', 'Sigm8'], ax)
@@ -369,16 +346,17 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     samples_Plank = read_plank_data(names, labels)
     samples_list = [samples_desi, samples_Plank]
     samples_legends = ['DESI DR1', 'Plank2018']
+    color_list = ['#C44E52', '#0173B2' ]
     if add_contour:
         samples_list = samples_list + samples_RF
-        samples_legends = samples_legends +  + samples_RF_label
+        samples_legends = samples_legends + samples_RF_label
 
     ax = axs[1]
     lims = [0.1, 0.60, 0.55, 0.80]
     g = plots.get_single_plotter()
     g.settings.alpha_filled_add = alpha_filled
     g.settings.linewidth_contour = linewidth_contour
-    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims)
+    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims, contour_levels=[0.68,0.95], colors=color_list,  contour_colors=color_list)
     legends1 = g.add_legend(samples_legends, ax=ax, colored_text=color_text, legend_loc='upper right')
     g.plot_2d_scatter(samples_sim, names[0],names[1], ax=ax, color='blue', scatter_size=30, lims=lims)
     lable_sim_points(sim_catalog, ['Omega', 'Hubble'], ax)
@@ -408,7 +386,7 @@ def new_compare(catalog_names, fname='./figures/test_compare.pdf', is_csv=False,
     g = plots.get_single_plotter()
     g.settings.alpha_filled_add = alpha_filled
     g.settings.linewidth_contour = linewidth_contour
-    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims)
+    g.plot_2d(samples_list, names, ax=ax, filled=True, lims=lims, contour_levels=[0.68,0.95])
     legends1 = g.add_legend(samples_legends, ax=ax, colored_text=color_text, legend_loc='upper right')
     g.plot_2d_scatter(samples_sim, names[0],names[1], ax=ax, color='blue', scatter_size=30, lims=lims)
     lable_sim_points(sim_catalog, ['Omega', 'OmegaB'], ax)
