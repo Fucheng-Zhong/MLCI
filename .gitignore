@@ -11,6 +11,6 @@ __pycache__/
 ._*
 Data/
 figures/
-models/
+/models/
 results/
 likelihood/
