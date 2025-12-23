@@ -36,73 +36,73 @@ test_set['RFtest5']['description'] = '-C3-C4-C5-C6'
 
 test_set['RFtest6'] = deepcopy(benchmark)
 test_set['RFtest6']['agn_feedback'] = '+delta'
-test_set['RFtest6']['description'] = 'feedback +delta'
+test_set['RFtest6']['description'] = 'Feedback$+\delta$'
 
 
 test_set['RFtest7'] = deepcopy(benchmark)
 test_set['RFtest7']['agn_feedback'] = '-delta'
-test_set['RFtest7']['description'] = 'feedback -delta'
+test_set['RFtest7']['description'] = 'Feedback$-\delta$'
 
 
 test_set['RFtest8'] = deepcopy(benchmark)
 test_set['RFtest8']['agn_feedback'] = 0.1
-test_set['RFtest8']['description'] = 'feedback +0.1'
+test_set['RFtest8']['description'] = 'Feedback$+0.1$'
 
 
 test_set['RFtest9'] = deepcopy(benchmark)
 test_set['RFtest9']['agn_feedback'] = -0.1
-test_set['RFtest9']['description'] = 'feedback -0.1'
+test_set['RFtest9']['description'] = 'Feedback$-0.1$'
 
 
 test_set['RFtest10'] = deepcopy(benchmark)
 test_set['RFtest10']['agn_feedback'] = 0.2
-test_set['RFtest10']['description'] = 'feedback +0.2'
+test_set['RFtest10']['description'] = 'Feedback$+0.2$'
 
 
 test_set['RFtest11'] = deepcopy(benchmark)
 test_set['RFtest11']['agn_feedback'] = -0.2
-test_set['RFtest11']['description'] = 'feedback -0.2'
+test_set['RFtest11']['description'] = 'Feedback$-0.2$'
 
 test_set['RFtest12'] = deepcopy(benchmark)
 test_set['RFtest12']['agn_feedback'] = 0.3
-test_set['RFtest12']['description'] = 'feedback +0.3'
+test_set['RFtest12']['description'] = 'Feedback$+0.3$'
 
 test_set['RFtest13'] = deepcopy(benchmark)
 test_set['RFtest13']['agn_feedback'] = -0.3
-test_set['RFtest13']['description'] = 'feedback -0.3'
+test_set['RFtest13']['description'] = 'Feedback$-0.3$'
 
 test_set['RFtest14'] = deepcopy(benchmark)
 test_set['RFtest14']['noise_level'] = [0.1, 0.1]
-test_set['RFtest14']['description'] = 'noise level 0.1'
+test_set['RFtest14']['description'] = 'Noise level 0.1'
 
 test_set['RFtest15'] = deepcopy(benchmark)
 test_set['RFtest15']['noise_level'] = [0.01, 0.01]
-test_set['RFtest15']['description'] = 'noise level 0.01'
+test_set['RFtest15']['description'] = 'Noise level 0.01'
 
 #=======
 test_set['RFtest16'] = deepcopy(benchmark)
 test_set['RFtest16']['simulations'] = [f'C{i+1}' for i in range(15)]
-test_set['RFtest16']['description'] = 'all simulations'
+test_set['RFtest16']['description'] = 'All simulations'
 
 test_set['RFtest17'] = deepcopy(benchmark)
 test_set['RFtest17']['leaf_size'] = 1e3
-test_set['RFtest17']['description'] = 'leaf size 1000'
+test_set['RFtest17']['description'] = 'Leaf size 1000'
 
 test_set['RFtest18'] = deepcopy(benchmark)
 test_set['RFtest18']['leaf_size'] = 1e3
 test_set['RFtest18']['noise_level'] = [0.01, 0.01]
-test_set['RFtest18']['description'] = 'noise 0.01+leaf 1000'
+test_set['RFtest18']['description'] = 'Noise 0.01+leaf 1000'
 
 test_set['RFtest19'] = deepcopy(benchmark)
 test_set['RFtest19']['agn_feedback'] = '+delta'
 test_set['RFtest19']['delta_prop'] = 2
-test_set['RFtest19']['description'] = 'feedback +2delta'
+test_set['RFtest19']['description'] = 'Feedback$+2\delta$'
 
 
 test_set['RFtest20'] = deepcopy(benchmark)
 test_set['RFtest20']['agn_feedback'] = '-delta'
 test_set['RFtest20']['delta_prop'] = 2
-test_set['RFtest20']['description'] = 'feedback -2delta'
+test_set['RFtest20']['description'] = 'Feedback$-2\delta$'
 
 test_set['RFtest21'] = deepcopy(benchmark)
 test_set['RFtest21']['mode'] = 'NB'

@@ -238,7 +238,7 @@ RFtest6:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +delta
+  description: Feedback$+\delta$
   delta_prop: 1
   simulations:
   - C3
@@ -285,7 +285,7 @@ RFtest7:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -delta
+  description: Feedback$-\delta$
   delta_prop: 1
   simulations:
   - C3
@@ -332,7 +332,7 @@ RFtest8:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.1
+  description: Feedback$+0.1$
   delta_prop: 1
   simulations:
   - C3
@@ -379,7 +379,7 @@ RFtest9:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.1
+  description: Feedback$-0.1$
   delta_prop: 1
   simulations:
   - C3
@@ -426,7 +426,7 @@ RFtest10:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.2
+  description: Feedback$+0.2$
   delta_prop: 1
   simulations:
   - C3
@@ -473,7 +473,7 @@ RFtest11:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.2
+  description: Feedback$-0.2$
   delta_prop: 1
   simulations:
   - C3
@@ -520,7 +520,7 @@ RFtest12:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +0.3
+  description: Feedback$+0.3$
   delta_prop: 1
   simulations:
   - C3
@@ -567,7 +567,7 @@ RFtest13:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -0.3
+  description: Feedback$-0.3$
   delta_prop: 1
   simulations:
   - C3
@@ -614,7 +614,7 @@ RFtest14:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: noise level 0.1
+  description: Noise level 0.1
   delta_prop: 1
   simulations:
   - C3
@@ -661,7 +661,7 @@ RFtest15:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: noise level 0.01
+  description: Noise level 0.01
   delta_prop: 1
   simulations:
   - C3
@@ -708,7 +708,7 @@ RFtest16:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: all simulations
+  description: All simulations
   delta_prop: 1
   simulations:
   - C1
@@ -757,7 +757,7 @@ RFtest17:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: leaf size 1000
+  description: Leaf size 1000
   delta_prop: 1
   simulations:
   - C3
@@ -804,7 +804,7 @@ RFtest18:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: noise 0.01+leaf 1000
+  description: Noise 0.01+leaf 1000
   delta_prop: 1
   simulations:
   - C3
@@ -851,7 +851,7 @@ RFtest19:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback +2delta
+  description: Feedback$+2\delta$
   delta_prop: 2
   simulations:
   - C3
@@ -898,7 +898,7 @@ RFtest20:
   sample_num: 100
   max_depth: 10
   exclude_outlier: false
-  description: feedback -2delta
+  description: Feedback$-2\delta$
   delta_prop: 2
   simulations:
   - C3
